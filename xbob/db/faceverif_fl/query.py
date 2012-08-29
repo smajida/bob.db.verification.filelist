@@ -20,10 +20,9 @@ class Database(object):
     """Initialises the database with the given base directory"""
 
     from .driver import Interface
-    from pkg_resources import resource_filename
     self.info = Interface()
 
-    self.base_dir = base_dir
+    self.base_dir = os.path.abspath(base_dir)
     if not os.path.isdir(self.base_dir):
       raise RuntimeError, 'Invalid directory specified %s.' % (self.base_dir)
     self.world_subdir = 'norm'

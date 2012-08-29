@@ -28,7 +28,10 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
 
   def test01_query(self):
 
-    db = Database('xbob/db/faceverif_fl/example_fl')
+    from pkg_resources import resource_filename
+    example_data = resource_filename(__name__, 'example_fl')
+    db = Database(example_data)
+
     self.assertEqual(len(db.models()), 6) # 6 model ids for world, dev and eval
     self.assertEqual(len(db.models(groups='world')), 2) # 2 model ids for world
     self.assertEqual(len(db.models(groups='dev')), 2) # 2 model ids for dev
@@ -61,11 +64,13 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
   def test02_manage_dumplist_1(self):
 
     from bob.db.script.dbmanage import main
-
-    self.assertEqual(main('faceverif_fl dumplist -b xbob/db/faceverif_fl/example_fl --self-test'.split()), 0)
+    from pkg_resources import resource_filename
+    example_data = resource_filename(__name__, 'example_fl')
+    self.assertEqual(main('faceverif_fl dumplist -b'.split() + [example_data, '--self-test']), 0)
 
   def test03_manage_checkfiles(self):
 
     from bob.db.script.dbmanage import main
-
-    self.assertEqual(main('faceverif_fl checkfiles -b xbob/db/faceverif_fl/example_fl --self-test'.split()), 0)
+    from pkg_resources import resource_filename
+    example_data = resource_filename(__name__, 'example_fl')
+    self.assertEqual(main('faceverif_fl checkfiles -b'.split() + [example_data, '--self-test']), 0)
