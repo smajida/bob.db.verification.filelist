@@ -33,7 +33,7 @@ class Database(object):
     self.scores_filename = 'for_scores.lst' # filename model_id claimed_id real_id
     self.tnorm_filename = 'for_tnorm.lst' # filename model_id real_id
     self.znorm_filename = 'for_znorm.lst' # filename real_id
-      
+
   def get_base_directory(self):
     """Returns the base directory where the filelists defining the database
        are located."""
@@ -56,14 +56,14 @@ class Database(object):
     return l
 
   def __append_model_ids__(self, ids_list, filename):
-    """Appends the model_ids contained in the given filename into the given 
+    """Appends the model_ids contained in the given filename into the given
        list"""
-    if os.path.isfile(filename): 
-      try: 
+    if os.path.isfile(filename):
+      try:
         for line in fileinput.input(filename):
           model_id = re.findall('[\w/-]+', line)[1]
           if not model_id in ids_list:
-            ids_list.append(model_id)  
+            ids_list.append(model_id)
         fileinput.close()
       except IOError as e:
         raise RuntimeError, 'Error reading the file %s.' % (filename,)
@@ -76,61 +76,61 @@ class Database(object):
     if directory: return os.path.join(directory, stem + extension)
     return stem + extension
 
-  def __append_objects_models__(self, objects_list, filename, directory, extension, model_ids=None):
-    """Appends the files contained in the given filename into the given 
-       list"""
-    if os.path.isfile(filename): 
-      try: 
+  def __append_objects_models__(self, objects_dict, filename, directory, extension, model_ids=None):
+    """Appends the files contained in the given filename into the given
+       dictionary"""
+    if os.path.isfile(filename):
+      try:
         for line in fileinput.input(filename):
           parsed_list = re.findall('[\w/-]+', line)
           sfile = parsed_list[0]
           model_id = parsed_list[1]
-          if len(parsed_list)>2: real_id = parsed_list[2] 
+          if len(parsed_list)>2: real_id = parsed_list[2]
           else: real_id = model_id
           claimed_id = real_id
           if (not model_ids) or model_id in model_ids:
-            objects_list.append( (self.__make_path__(sfile, directory, extension), model_id, claimed_id, real_id, sfile))
+            objects_dict[sfile] = (self.__make_path__(sfile, directory, extension), model_id, claimed_id, real_id, sfile)
         fileinput.close()
       except IOError as e:
         raise RuntimeError, 'Error reading the file %s.' % (filename,)
     else:
       raise RuntimeError, 'File %s does not exist.' % (filename,)
 
-  def __append_objects_scores__(self, objects_list, filename, directory, extension, model_ids=None, classes=None):
-    """Appends the files contained in the given filename into the given 
-       list"""
-    if os.path.isfile(filename): 
-      try: 
+  def __append_objects_scores__(self, objects_dict, filename, directory, extension, model_ids=None, classes=None):
+    """Appends the files contained in the given filename into the given
+       dictionary"""
+    if os.path.isfile(filename):
+      try:
         for line in fileinput.input(filename):
           parsed_list = re.findall('[\w/-]+', line)
           sfile = parsed_list[0]
           model_id = parsed_list[1]
-          if len(parsed_list)>2: claimed_id = parsed_list[2] 
+          if len(parsed_list)>2: claimed_id = parsed_list[2]
           else: claimed_id = model_id
-          if len(parsed_list)>3: real_id = parsed_list[3] 
+          if len(parsed_list)>3: real_id = parsed_list[3]
           else: real_id = claimed_id
           if (not model_ids) or model_id in model_ids:
             if(not classes \
                 or ('client' in classes and claimed_id==real_id) \
                 or ('impostor' in classes and claimed_id!=real_id) ):
-              objects_list.append( (self.__make_path__(sfile, directory, extension), model_id, claimed_id, real_id, sfile))
+              objects_dict[sfile] = (self.__make_path__(sfile, directory, extension), model_id, claimed_id, real_id, sfile)
         fileinput.close()
       except IOError as e:
         raise RuntimeError, 'Error reading the file %s.' % (filename,)
     else:
       raise RuntimeError, 'File %s does not exist.' % (filename,)
 
-  def __append_objects_znorm__(self, objects_list, filename, directory, extension, real_ids=None):
-    """Appends the files contained in the given filename into the given 
-       list"""
-    if os.path.isfile(filename): 
-      try: 
+  def __append_objects_znorm__(self, objects_dict, filename, directory, extension, real_ids=None):
+    """Appends the files contained in the given filename into the given
+       dictionary"""
+    if os.path.isfile(filename):
+      try:
         for line in fileinput.input(filename):
           parsed_list = re.findall('[\w/-]+', line)
           sfile = parsed_list[0]
           real_id = parsed_list[1]
           if (not real_ids) or real_id in real_ids:
-            objects_list.append( (self.__make_path__(sfile, directory, extension), real_id, sfile))
+            objects_dict[sfile] = (self.__make_path__(sfile, directory, extension), real_id, sfile)
         fileinput.close()
       except IOError as e:
         raise RuntimeError, 'Error reading the file %s.' % (filename,)
@@ -140,13 +140,13 @@ class Database(object):
 
   def __getClientIdFromFile__(self, model_id_arg, filename):
     """Tries to find a client id corresponding to a model id in the given file"""
-    if os.path.isfile(filename): 
-      try: 
+    if os.path.isfile(filename):
+      try:
         for line in fileinput.input(filename):
           parsed_list = re.findall('[\w/-]+', line)
           sfile = parsed_list[0]
           model_id = parsed_list[1]
-          if len(parsed_list)>2: real_id = parsed_list[2] 
+          if len(parsed_list)>2: real_id = parsed_list[2]
           else: real_id = model_id
           if model_id_arg == model_id:
             fileinput.close()
@@ -158,7 +158,7 @@ class Database(object):
       raise RuntimeError, 'File %s does not exist.' % (filename,)
     # not found
     return (False, '0')
-   
+
   def get_client_id_from_model_id(self, model_id_arg):
     """Returns a client id from a model id"""
     world_filename = os.path.join(self.base_dir, self.world_subdir, self.world_filename0)
@@ -172,10 +172,10 @@ class Database(object):
     evalmodels_filename = os.path.join(self.base_dir, self.eval_subdir, self.models_filename)
     (found, value) = self.__getClientIdFromFile__(model_id_arg, evalmodels_filename)
     if(found == True): return value
-    
+
     # not found
     raise RuntimeError, 'Could not find client id from the given model id %s.' % (model_id_arg,)
-   
+
   def get_client_id_from_tmodel_id(self, model_id_arg):
     """Returns a client id from a T-Norm model id"""
     devtnorm_filename = os.path.join(self.base_dir, self.dev_subdir, self.tnorm_filename)
@@ -199,8 +199,8 @@ class Database(object):
 
     subworld
       Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one 
-      split should be specified. 
+      In order to be considered, "world" should be in groups and only one
+      split should be specified.
 
     Returns: A list containing all the model ids which have the given
     properties.
@@ -277,7 +277,7 @@ class Database(object):
     return retval
 
 
-  def objects(self, directory=None, extension=None, protocol=None, purposes=None, 
+  def objects(self, directory=None, extension=None, protocol=None, purposes=None,
       model_ids=None, groups=None, classes=None, subworld=None):
     """Returns a set of filenames for the specific query by the user.
 
@@ -291,38 +291,38 @@ class Database(object):
 
     purposes
       The purposes required to be retrieved ("enrol", "probe") or a tuple
-      with several of them. If 'None' is given (this is the default), it is 
+      with several of them. If 'None' is given (this is the default), it is
       considered the same as a tuple with all possible values. This field is
       ignored for the data from the "world" group.
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
       One of the groups ("dev", "eval", "world") or a tuple with several of them.
-      If 'None' is given (this is the default), it is considered the same as a 
+      If 'None' is given (this is the default), it is considered the same as a
       tuple with all possible values.
 
     classes
-      The classes (types of accesses) to be retrieved ('client', 'impostor') 
-      or a tuple with several of them. If 'None' is given (this is the 
+      The classes (types of accesses) to be retrieved ('client', 'impostor')
+      or a tuple with several of them. If 'None' is given (this is the
       default), it is considered the same as a tuple with all possible values.
 
     subworld
       Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one 
-      split should be specified. 
+      In order to be considered, "world" should be in groups and only one
+      split should be specified.
 
-    Returns: A list containing:
-      - 0: the resolved filenames 
+    Returns: A dictionary with the file name as key containing:
+      - 0: the resolved filenames
       - 1: the model id
       - 2: the claimed id attached to the model
       - 3: the real id
       - 4: the "stem" path (basename of the file)
 
-    considering all the filtering criteria. 
+    considering all the filtering criteria.
     """
 
     VALID_PURPOSES = ('enrol', 'probe')
@@ -335,14 +335,14 @@ class Database(object):
     classes = self.__check_validity__(classes, "class", VALID_CLASSES)
     subworld = self.__check_validity__(subworld, "subworld", VALID_SUBWORLDS)
 
-    retval = []
+    retval = {}
 
     if(isinstance(model_ids,str)):
       model_ids = (model_ids,)
-    
+
     if 'world' in groups:
       self.__append_objects_models__(retval, os.path.join(self.base_dir, self.world_subdir, self.world_filename0), \
-        directory, extension, model_ids) 
+        directory, extension, model_ids)
 
     if 'dev' in groups:
       if('enrol' in purposes):
@@ -384,33 +384,33 @@ class Database(object):
 
     purposes
       The purposes required to be retrieved ("enrol", "probe") or a tuple
-      with several of them. If 'None' is given (this is the default), it is 
+      with several of them. If 'None' is given (this is the default), it is
       considered the same as a tuple with all possible values. This field is
       ignored for the data from the "world" group.
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
-      One of the groups ("dev", "eval", "world") or a tuple with several of them. 
-      If 'None' is given (this is the default), it is considered the same as a 
+      One of the groups ("dev", "eval", "world") or a tuple with several of them.
+      If 'None' is given (this is the default), it is considered the same as a
       tuple with all possible values.
 
     classes
-      The classes (types of accesses) to be retrieved ('client', 'impostor') 
-      or a tuple with several of them. If 'None' is given (this is the 
+      The classes (types of accesses) to be retrieved ('client', 'impostor')
+      or a tuple with several of them. If 'None' is given (this is the
       default), it is considered the same as a tuple with all possible values.
 
     subworld
       Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one 
+      In order to be considered, "world" should be in groups and only one
       split should be specified. Clients from other groups ("dev", "eval")
       will in this case be ignored.
 
     Returns: A list containing the resolved filenames considering all
-    the filtering criteria. 
+    the filtering criteria.
     """
 
     retval = []
@@ -421,7 +421,7 @@ class Database(object):
 
 
   def tobjects(self, directory=None, extension=None, protocol=None, model_ids=None, groups=None):
-    """Returns a set of filenames for enrolling T-norm models for score 
+    """Returns a set of filenames for enrolling T-norm models for score
        normalization.
 
     Keyword Parameters:
@@ -433,27 +433,27 @@ class Database(object):
       A filename extension that will be appended to the final filepath returned
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
       The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing:
-      - 0: the resolved filenames 
+    Returns: A dictionary with the file name as key containing:
+      - 0: the resolved filenames
       - 1: the model id
       - 2: the claimed id attached to the model
       - 3: the real id (same as claimed id)
       - 4: the "stem" path (basename of the file)
 
-    considering all the filtering criteria. 
+    considering all the filtering criteria.
     """
 
     VALID_GROUPS = ('dev', 'eval')
     groups = self.__check_validity__(groups, "group", VALID_GROUPS)
 
-    retval = []
+    retval = {}
 
     if(isinstance(model_ids,str)):
       model_ids = (model_ids,)
@@ -472,7 +472,7 @@ class Database(object):
 
 
   def tfiles(self, directory=None, extension=None, protocol=None, model_ids=None, groups=None):
-    """Returns a set of filenames for enrolling T-norm models for score 
+    """Returns a set of filenames for enrolling T-norm models for score
        normalization.
 
     Keyword Parameters:
@@ -484,21 +484,21 @@ class Database(object):
       A filename extension that will be appended to the final filepath returned
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
       The groups to which the clients belong ("dev", "eval").
 
     Returns: A list containing:
-      - 0: the resolved filenames 
+      - 0: the resolved filenames
       - 1: the model id
       - 2: the claimed id attached to the model
       - 3: the real id (same as claimed id)
       - 4: the "stem" path (basename of the file)
 
-    considering all the filtering criteria. 
+    considering all the filtering criteria.
     """
 
     retval = []
@@ -520,29 +520,29 @@ class Database(object):
       A filename extension that will be appended to the final filepath returned
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
       The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing:
-      - 0: the resolved filenames 
+    Returns: A dictionary with the file name as key containing:
+      - 0: the resolved filenames
       - 1: the real id
       - 2: the "stem" path (basename of the file)
 
-    considering all the filtering criteria. 
+    considering all the filtering criteria.
     """
 
     VALID_GROUPS = ('dev', 'eval')
     groups = self.__check_validity__(groups, "group", VALID_GROUPS)
 
-    retval = []
+    retval = {}
 
     if(isinstance(model_ids,str)):
       model_ids = (model_ids,)
-    
+
     # Please note that Z-Norm file lists only contain impostor accesses
     # (i.e. classes == 'impostor')
     if 'dev' in groups:
@@ -568,15 +568,15 @@ class Database(object):
       A filename extension that will be appended to the final filepath returned
 
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed 
-      client id).  If 'None' is given (this is the default), no filter over 
+      Only retrieves the files for the provided list of model ids (claimed
+      client id).  If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
     groups
       The groups to which the clients belong ("dev", "eval").
 
     Returns: A list containing:
-      - 0: the resolved filenames 
+      - 0: the resolved filenames
       - 1: the real id
       - 2: the "stem" path (basename of the file)
 
