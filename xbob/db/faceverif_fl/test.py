@@ -40,14 +40,17 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
     self.assertEqual(len(db.tmodels()), 2) # 2 model ids for T-Norm score normalisation
     self.assertEqual(len(db.zmodels()), 2) # 2 model ids for Z-Norm score normalisation
 
-    self.assertEqual(len(db.objects(groups='world')), 8) # 8 samples in the world set
+    self.assertEqual(len(db.files(groups='world')), 8) # 8 samples in the world set
 
-    self.assertEqual(len(db.objects(groups='dev', purposes='enrol')), 8) # 8 samples for enrolment in the dev set
-    self.assertEqual(len(db.objects(groups='dev', purposes='probe', classes='client')), 8) # 8 samples as client probes in the dev set
-    self.assertEqual(len(db.objects(groups='dev', purposes='probe', classes='impostor')), 4) # 4 samples as impostor probes in the dev set
+    # test that the directory and extension work, as well as test that the files() function returns the requested dictionary
+    self.assertEqual(db.files(groups='world', directory='x', extension='.y')['data/model1_session1_sample1'], 'x/data/model1_session1_sample1.y')
 
-    self.assertEqual(len(db.tobjects(groups='dev')), 8) # 8 samples for enroling T-norm models
-    self.assertEqual(len(db.zobjects(groups='dev')), 8) # 8 samples for Z-norm impostor accesses
+    self.assertEqual(len(db.files(groups='dev', purposes='enrol')), 8) # 8 samples for enrolment in the dev set
+    self.assertEqual(len(db.files(groups='dev', purposes='probe', classes='client')), 8) # 8 samples as client probes in the dev set
+    self.assertEqual(len(db.files(groups='dev', purposes='probe', classes='impostor')), 4) # 4 samples as impostor probes in the dev set
+
+    self.assertEqual(len(db.tfiles(groups='dev')), 8) # 8 samples for enroling T-norm models
+    self.assertEqual(len(db.zfiles(groups='dev')), 8) # 8 samples for Z-norm impostor accesses
 
     self.assertEqual(len(db.objects(groups='eval', purposes='enrol')), 8) # 8 samples for enrolment in the dev set
     self.assertEqual(len(db.objects(groups='eval', purposes='probe', classes='client')), 8) # 8 samples as client probes in the dev set
@@ -60,6 +63,7 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
     self.assertEqual(db.get_client_id_from_model_id('3'), '3')
     self.assertEqual(db.get_client_id_from_model_id('6'), '6')
     self.assertEqual(db.get_client_id_from_tmodel_id('7'), '7')
+
 
   def test02_manage_dumplist_1(self):
 

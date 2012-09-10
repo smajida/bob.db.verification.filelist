@@ -409,13 +409,13 @@ class Database(object):
       split should be specified. Clients from other groups ("dev", "eval")
       will in this case be ignored.
 
-    Returns: A list containing the resolved filenames considering all
-    the filtering criteria.
+    Returns: A dictionary containing the resolved filenames considering all the
+    filtering criteria.
     """
 
-    retval = []
+    retval = {}
     d = self.objects(directory, extension, protocol, purposes, model_ids, groups, classes, subworld)
-    for t in d: retval.append(t[0])
+    for t,v in d.items(): retval[t] = v[0]
 
     return retval
 
@@ -491,19 +491,13 @@ class Database(object):
     groups
       The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing:
-      - 0: the resolved filenames
-      - 1: the model id
-      - 2: the claimed id attached to the model
-      - 3: the real id (same as claimed id)
-      - 4: the "stem" path (basename of the file)
-
-    considering all the filtering criteria.
+    Returns: A dictionary containing the resolved filenames considering all the
+    filtering criteria.
     """
 
-    retval = []
+    retval = {}
     d = self.tobjects(directory, extension, protocol, model_ids, groups)
-    for t in d: retval.append(t[0])
+    for t,v in d.items(): retval[t] = v[0]
 
     return retval
 
@@ -575,16 +569,12 @@ class Database(object):
     groups
       The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing:
-      - 0: the resolved filenames
-      - 1: the real id
-      - 2: the "stem" path (basename of the file)
-
-    considering all the filtering criteria.
+    Returns: A dictionary containing the resolved filenames considering all the
+    filtering criteria.
     """
 
-    retval = []
+    retval = {}
     d = self.zobjects(directory, extension, protocol, model_ids, groups)
-    for t in d: retval.append(t[0])
+    for t,v in d.items(): retval[t] = v[0]
 
     return retval
