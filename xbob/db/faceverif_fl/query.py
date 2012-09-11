@@ -413,9 +413,9 @@ class Database(object):
     filtering criteria.
     """
 
-    retval = {}
+    retval = []
     d = self.objects(directory, extension, protocol, purposes, model_ids, groups, classes, subworld)
-    for t,v in d.items(): retval[t] = v[0]
+    for k in d: retval.append(k)
 
     return retval
 
@@ -495,9 +495,9 @@ class Database(object):
     filtering criteria.
     """
 
-    retval = {}
+    retval = []
     d = self.tobjects(directory, extension, protocol, model_ids, groups)
-    for t,v in d.items(): retval[t] = v[0]
+    for k in d: retval.append(k)
 
     return retval
 
@@ -573,8 +573,8 @@ class Database(object):
     filtering criteria.
     """
 
-    retval = {}
+    retval = []
     d = self.zobjects(directory, extension, protocol, model_ids, groups)
-    for t,v in d.items(): retval[t] = v[0]
+    for k in d: retval.append(k)
 
     return retval
