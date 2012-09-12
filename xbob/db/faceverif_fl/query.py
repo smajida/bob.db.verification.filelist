@@ -11,7 +11,7 @@ import re
 
 class Database(object):
   """The dataset class opens and maintains a connection opened to the Database.
-
+  
   It provides many different ways to probe for the characteristics of the data
   and for the data itself inside the database.
   """
@@ -41,7 +41,7 @@ class Database(object):
 
   def set_base_directory(self, base_dir):
     """Resets the base directory where the filelists defining the database
-       are located."""
+      are located."""
     self.base_dir = base_dir
     if not os.path.isdir(self.base_dir):
       raise RuntimeError, 'Invalid directory specified %s.' % (self.base_dir)
@@ -191,16 +191,16 @@ class Database(object):
 
   def models(self, protocol=None, groups=None, subworld=None):
     """Returns a set of models for the specific query by the user.
-
+    
     Keyword Parameters:
 
     groups
-      The groups to which the models belong ("dev", "eval", "world").
+    The groups to which the models belong ("dev", "eval", "world").
 
     subworld
-      Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one
-      split should be specified.
+    Specify a split of the world data ("")
+    In order to be considered, "world" should be in groups and only one
+    split should be specified.
 
     Returns: A list containing all the model ids which have the given
     properties.
@@ -228,12 +228,12 @@ class Database(object):
 
   def tmodels(self, protocol=None, groups=None):
     """Returns a set of T-Norm models for the specific query by the user.
-
+    
     Keyword Parameters:
-
+    
     groups
-      The groups to which the models belong ("dev", "eval").
-
+    The groups to which the models belong ("dev", "eval").
+    
     Returns: A list containing all the model ids belonging to the given group.
     """
 
@@ -253,12 +253,12 @@ class Database(object):
 
   def zmodels(self, protocol=None, groups=None):
     """Returns a set of Z-Norm models for the specific query by the user.
-
+    
     Keyword Parameters:
 
     groups
-      The groups to which the models belong ("dev", "eval").
-
+    The groups to which the models belong ("dev", "eval").
+    
     Returns: A list containing all the model ids belonging to the given group.
     """
 
@@ -280,47 +280,47 @@ class Database(object):
   def objects(self, directory=None, extension=None, protocol=None, purposes=None,
       model_ids=None, groups=None, classes=None, subworld=None):
     """Returns a set of filenames for the specific query by the user.
-
+    
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     purposes
-      The purposes required to be retrieved ("enrol", "probe") or a tuple
-      with several of them. If 'None' is given (this is the default), it is
-      considered the same as a tuple with all possible values. This field is
-      ignored for the data from the "world" group.
-
+    The purposes required to be retrieved ("enrol", "probe") or a tuple
+    with several of them. If 'None' is given (this is the default), it is
+    considered the same as a tuple with all possible values. This field is
+    ignored for the data from the "world" group.
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
 
     groups
-      One of the groups ("dev", "eval", "world") or a tuple with several of them.
-      If 'None' is given (this is the default), it is considered the same as a
-      tuple with all possible values.
+    One of the groups ("dev", "eval", "world") or a tuple with several of them.
+    If 'None' is given (this is the default), it is considered the same as a
+    tuple with all possible values.
 
     classes
-      The classes (types of accesses) to be retrieved ('client', 'impostor')
-      or a tuple with several of them. If 'None' is given (this is the
-      default), it is considered the same as a tuple with all possible values.
+    The classes (types of accesses) to be retrieved ('client', 'impostor')
+    or a tuple with several of them. If 'None' is given (this is the
+    default), it is considered the same as a tuple with all possible values.
 
     subworld
-      Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one
-      split should be specified.
+    Specify a split of the world data ("")
+    In order to be considered, "world" should be in groups and only one
+    split should be specified.
 
     Returns: A dictionary with the file name as key containing:
-      - 0: the resolved filenames
-      - 1: the model id
-      - 2: the claimed id attached to the model
-      - 3: the real id
-      - 4: the "stem" path (basename of the file)
+    - 0: the resolved filenames
+    - 1: the model id
+    - 2: the claimed id attached to the model
+    - 3: the real id
+    - 4: the "stem" path (basename of the file)
 
     considering all the filtering criteria.
     """
@@ -373,42 +373,42 @@ class Database(object):
   def files(self, directory=None, extension=None, protocol=None, purposes=None,
       model_ids=None, groups=None, classes=None, subworld=None):
     """Returns a set of filenames for the specific query by the user.
-
+    
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     purposes
-      The purposes required to be retrieved ("enrol", "probe") or a tuple
-      with several of them. If 'None' is given (this is the default), it is
-      considered the same as a tuple with all possible values. This field is
-      ignored for the data from the "world" group.
-
+    The purposes required to be retrieved ("enrol", "probe") or a tuple
+    with several of them. If 'None' is given (this is the default), it is
+    considered the same as a tuple with all possible values. This field is
+    ignored for the data from the "world" group.
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
-
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
+    
     groups
-      One of the groups ("dev", "eval", "world") or a tuple with several of them.
-      If 'None' is given (this is the default), it is considered the same as a
-      tuple with all possible values.
-
+    One of the groups ("dev", "eval", "world") or a tuple with several of them.
+    If 'None' is given (this is the default), it is considered the same as a
+    tuple with all possible values.
+    
     classes
-      The classes (types of accesses) to be retrieved ('client', 'impostor')
-      or a tuple with several of them. If 'None' is given (this is the
-      default), it is considered the same as a tuple with all possible values.
-
+    The classes (types of accesses) to be retrieved ('client', 'impostor')
+    or a tuple with several of them. If 'None' is given (this is the
+    default), it is considered the same as a tuple with all possible values.
+    
     subworld
-      Specify a split of the world data ("")
-      In order to be considered, "world" should be in groups and only one
-      split should be specified. Clients from other groups ("dev", "eval")
-      will in this case be ignored.
-
+    Specify a split of the world data ("")
+    In order to be considered, "world" should be in groups and only one
+    split should be specified. Clients from other groups ("dev", "eval")
+    will in this case be ignored.
+    
     Returns: A dictionary containing the resolved filenames considering all the
     filtering criteria.
     """
@@ -422,31 +422,31 @@ class Database(object):
 
   def tobjects(self, directory=None, extension=None, protocol=None, model_ids=None, groups=None):
     """Returns a set of filenames for enrolling T-norm models for score
-       normalization.
-
+    normalization.
+    
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
-
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
+    
     groups
-      The groups to which the clients belong ("dev", "eval").
-
+    The groups to which the clients belong ("dev", "eval").
+    
     Returns: A dictionary with the file name as key containing:
-      - 0: the resolved filenames
-      - 1: the model id
-      - 2: the claimed id attached to the model
-      - 3: the real id (same as claimed id)
-      - 4: the "stem" path (basename of the file)
-
+    - 0: the resolved filenames
+    - 1: the model id
+    - 2: the claimed id attached to the model
+    - 3: the real id (same as claimed id)
+    - 4: the "stem" path (basename of the file)
+    
     considering all the filtering criteria.
     """
 
@@ -473,24 +473,24 @@ class Database(object):
 
   def tfiles(self, directory=None, extension=None, protocol=None, model_ids=None, groups=None):
     """Returns a set of filenames for enrolling T-norm models for score
-       normalization.
-
+    normalization.
+        
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
-
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
+    
     groups
-      The groups to which the clients belong ("dev", "eval").
-
+    The groups to which the clients belong ("dev", "eval").
+    
     Returns: A dictionary containing the resolved filenames considering all the
     filtering criteria.
     """
@@ -504,28 +504,28 @@ class Database(object):
 
   def zobjects(self, directory=None, extension=None, protocol=None, model_ids=None, groups=None):
     """Returns a set of filenames to perform Z-norm score normalization.
-
+    
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
-
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
+    
     groups
-      The groups to which the clients belong ("dev", "eval").
-
+    The groups to which the clients belong ("dev", "eval").
+    
     Returns: A dictionary with the file name as key containing:
-      - 0: the resolved filenames
-      - 1: the real id
-      - 2: the "stem" path (basename of the file)
-
+    - 0: the resolved filenames
+    - 1: the real id
+    - 2: the "stem" path (basename of the file)
+    
     considering all the filtering criteria.
     """
 
@@ -552,23 +552,23 @@ class Database(object):
   def zfiles(self, directory=None, extension=None, protocol=None,
       model_ids=None, groups=None):
     """Returns a set of filenames to perform Z-norm score normalization.
-
+    
     Keyword Parameters:
-
+    
     directory
-      A directory name that will be prepended to the final filepath returned
-
+    A directory name that will be prepended to the final filepath returned
+    
     extension
-      A filename extension that will be appended to the final filepath returned
-
+    A filename extension that will be appended to the final filepath returned
+    
     model_ids
-      Only retrieves the files for the provided list of model ids (claimed
-      client id).  If 'None' is given (this is the default), no filter over
-      the model_ids is performed.
-
+    Only retrieves the files for the provided list of model ids (claimed
+    client id). If 'None' is given (this is the default), no filter over
+    the model_ids is performed.
+    
     groups
-      The groups to which the clients belong ("dev", "eval").
-
+    The groups to which the clients belong ("dev", "eval").
+    
     Returns: A dictionary containing the resolved filenames considering all the
     filtering criteria.
     """
