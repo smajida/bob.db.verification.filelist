@@ -130,7 +130,7 @@ class Database(object):
           sfile = parsed_list[0]
           real_id = parsed_list[1]
           if (not real_ids) or real_id in real_ids:
-            objects_dict[sfile] = (self.__make_path__(sfile, directory, extension), real_id, sfile)
+            objects_dict[sfile] = (self.__make_path__(sfile, directory, extension), real_id, real_id, real_id, sfile)
         fileinput.close()
       except IOError as e:
         raise RuntimeError, 'Error reading the file %s.' % (filename,)
@@ -523,9 +523,12 @@ class Database(object):
     
     Returns: A dictionary with the file name as key containing:
     - 0: the resolved filenames
-    - 1: the real id
-    - 2: the "stem" path (basename of the file)
+    - 1: the model id # not applicable in this case
+    - 2: the claimed id attached to the model # not applicable in this case
+    - 3: the real id
+    - 4: the "stem" path (basename of the file)
     
+
     considering all the filtering criteria.
     """
 
