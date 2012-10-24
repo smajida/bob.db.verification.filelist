@@ -15,11 +15,9 @@ def checkfiles(args):
   """Checks existence of files based on your criteria"""
 
   from .query import Database
-  db = Database(args.base_directory)
+  db = Database(args.base_directory, use_dense_probe_file_list = False)
 
-  r = db.files(
-      directory=args.directory,
-      extension=args.extension,
+  r = db.objects(
       purposes=args.purposes,
       #model_ids=args.model_ids,
       groups=args.groups,
@@ -30,7 +28,7 @@ def checkfiles(args):
   good = []
   bad = []
   for f in r:
-    if os.path.exists(f): good.append(f)
+    if os.path.exists(f.make_path(args.directory, args.extension)): good.append(f)
     else: bad.append(f)
 
   # report
@@ -41,7 +39,7 @@ def checkfiles(args):
 
   if bad:
     for f in bad:
-      output.write('Cannot find file "%s"\n' % (f,))
+      output.write('Cannot find file "%s"\n' % f.make_path(args.directory, args.extension))
     output.write('%d files (out of %d) were not found at "%s"\n' % \
         (len(bad), len(r), args.directory))
 

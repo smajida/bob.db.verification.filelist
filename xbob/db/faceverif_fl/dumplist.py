@@ -15,11 +15,9 @@ def dumplist(args):
   """Dumps lists of files based on your criteria"""
 
   from .query import Database
-  db = Database(args.base_directory)
+  db = Database(args.base_directory, use_dense_probe_file_list = False)
 
-  r = db.files(
-      directory=args.directory,
-      extension=args.extension,
+  r = db.objects(
       purposes=args.purposes,
       #model_ids=args.model_ids,
       groups=args.groups,
@@ -32,7 +30,7 @@ def dumplist(args):
     output = null()
 
   for f in r:
-    output.write('%s\n' % (f,))
+    output.write('%s\n' % f.make_path(directory=args.directory,extension=args.extension))
 
   return 0
 
