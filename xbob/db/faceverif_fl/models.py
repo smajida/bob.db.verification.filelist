@@ -34,7 +34,7 @@ class Client:
 
 
 class File:
-  """Files of this database are composed from the client id, a file id, a model id and a claimed (client) id."""
+  """Files of this database are composed from the client id, a file id, (a model id) and a claimed (client) id."""
   def __init__(self, file_name, client_id, model_id = None, claimed_id = None):
     # the file id is the full file name
     self.id = file_name
@@ -162,6 +162,7 @@ read_lists = {}
 model_dicts = {}
 
 def read_list(list_file, group, type = None, store_lists = True):
+  """Reads the list of Files from the given list file (if not done yet) and returns it."""
   if group == 'world':
     if group not in read_lists:
       # read the world list into memory
@@ -189,6 +190,7 @@ def read_list(list_file, group, type = None, store_lists = True):
     return read_lists[group][type]
 
 def read_models(list_file, group, type= None, store_lists = True):
+  """Generates a dictionary from model_ids to client_ids for the given list file, if not done yet, and returns it"""
   assert group in ('dev', 'eval', 'world')
   assert type in ('for_models', 'for_tnorm')
   if group not in model_dicts:

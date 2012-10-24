@@ -11,11 +11,8 @@ import os
 from .models import Client, File, read_list, read_models
 
 class Database(object):
-  """The dataset class opens and maintains a connection opened to the Database.
-
-  It provides many different ways to probe for the characteristics of the data
-  and for the data itself inside the database.
-  """
+  """This class provides a user-friendly interface to databases that are given as file lists.
+  The API is comparable to other xbob.db databases."""
 
   def __init__(
       self,
@@ -36,7 +33,7 @@ class Database(object):
       keep_read_lists_in_memory = True    # if set to True (the RECOMMENDED default) lists are read only once and stored in memory.
   ):
     """Initializes the database with the file lists from the given base directory,
-    and the given subdirectories and file names (which default to useful values if not given)."""
+    and the given sub-directories and file names (which default to useful values if not given)."""
 
     from .driver import Interface
     self.info = Interface()
@@ -114,7 +111,20 @@ class Database(object):
 
 
   def get_client_id_from_model_id(self, model_id, groups=None):
-    """Returns the client id that is connected to the given model id. If groups are given, only these groups are considered."""
+    """Returns the client id that is connected to the given model id.
+
+    Keyword parameters:
+
+    model_id
+      The model id for which the client id should be returned.
+
+    groups
+      (optional) the groups, the client belongs to.
+      Might be one or more of ('dev', 'eval', 'world').
+      If groups are given, only these groups are considered.
+
+    Returns: The client id for the given model id, if found.
+    """
     VALID_GROUPS = ('dev', 'eval', 'world')
     groups = self.__check_validity__(groups, "group", VALID_GROUPS)
 
@@ -127,7 +137,20 @@ class Database(object):
 
 
   def get_client_id_from_tmodel_id(self, model_id, groups = None):
-    """Returns a client id that is connected to the given T-Norm model id. If groups are given, only these groups are considered."""
+    """Returns the client id that is connected to the given T-Norm model id.
+
+    Keyword parameters:
+
+    model_id
+      The model id for which the client id should be returned.
+
+    groups
+      (optional) the groups, the client belongs to.
+      Might be one or more of ('dev', 'eval', 'world').
+      If groups are given, only these groups are considered.
+
+    Returns: The client id for the given model id of a T-Norm model, if found.
+    """
     VALID_GROUPS = ('dev', 'eval')
     groups = self.__check_validity__(groups, "group", VALID_GROUPS)
 
@@ -148,9 +171,9 @@ class Database(object):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval", "world").
+      The groups to which the clients belong ("dev", "eval", "world").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the Client objects which have the given properties.
     """
 
     client_ids = self.client_ids(protocol, groups)
@@ -165,9 +188,9 @@ class Database(object):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval").
+      The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the T-Norm Client objects which have the given properties.
     """
     tclient_ids = self.tclient_ids(protocol, groups)
     return [Client(id) for id in tclient_ids]
@@ -184,7 +207,7 @@ class Database(object):
     groups
       The groups to which the models belong ("dev", "eval").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the Z-Norm Client objects which have the given properties.
     """
     zclient_ids = self.zclient_ids(protocol, groups)
     return [Client(id) for id in zclient_ids]
@@ -201,7 +224,7 @@ class Database(object):
 
 
   def client_ids(self, protocol=None, groups=None):
-    """Returns a sorted list of client ids for the specific query by the user.
+    """Returns a list of client ids for the specific query by the user.
 
     Keyword Parameters:
 
@@ -209,9 +232,9 @@ class Database(object):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval", "world").
+      The groups to which the clients belong ("dev", "eval", "world").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the client ids which have the given properties.
     """
 
     VALID_GROUPS = ('dev', 'eval', 'world')
@@ -221,7 +244,7 @@ class Database(object):
 
 
   def tclient_ids(self, protocol=None, groups=None):
-    """Returns a sorted list of T-Norm client ids for the specific query by the user.
+    """Returns a list of T-Norm client ids for the specific query by the user.
 
     Keyword Parameters:
 
@@ -229,9 +252,9 @@ class Database(object):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval").
+      The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the T-Norm client ids which have the given properties.
     """
 
     VALID_GROUPS = ('dev', 'eval')
@@ -241,7 +264,7 @@ class Database(object):
 
 
   def zclient_ids(self, protocol=None, groups=None):
-    """Returns a sorted list of T-Norm client ids for the specific query by the user.
+    """Returns a list of Z-Norm client ids for the specific query by the user.
 
     Keyword Parameters:
 
@@ -249,9 +272,9 @@ class Database(object):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval").
+      The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing all the model ids which have the given properties.
+    Returns: A list containing all the Z-Norm client ids which have the given properties.
     """
 
     VALID_GROUPS = ('dev', 'eval')
@@ -271,7 +294,7 @@ class Database(object):
 
 
   def model_ids(self, protocol=None, groups=None):
-    """Returns a sorted list of model ids for the specific query by the user.
+    """Returns a list of model ids for the specific query by the user.
 
     Keyword Parameters:
 
@@ -301,7 +324,7 @@ class Database(object):
     groups
       The groups to which the models belong ("dev", "eval").
 
-    Returns: A list containing all the model ids belonging to the given group.
+    Returns: A list containing all the T-Norm model ids belonging to the given group.
     """
 
     VALID_GROUPS = ('dev', 'eval')
@@ -417,8 +440,7 @@ class Database(object):
 
 
   def tobjects(self, protocol=None, model_ids=None, groups=None):
-    """Returns a set of filenames for enrolling T-norm models for score
-    normalization.
+    """Returns a list of File objects for enrolling T-norm models for score normalization.
 
     Keyword Parameters:
 
@@ -431,7 +453,7 @@ class Database(object):
       the model_ids is performed.
 
     groups
-      The groups to which the clients belong ("dev", "eval").
+      The groups to which the models belong ("dev", "eval").
 
     Returns: A list of File objects considering all the filtering criteria.
     """
@@ -444,7 +466,7 @@ class Database(object):
       model_ids = (model_ids,)
 
     # iterate over the lists and extract the files
-    # we assume that the is no duplicate file here...
+    # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
       for file in read_list(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm', self.m_store_lists):
@@ -455,7 +477,7 @@ class Database(object):
 
 
   def zobjects(self, protocol=None, groups=None):
-    """Returns a set of filenames to perform Z-norm score normalization.
+    """Returns a list of File objects to perform Z-norm score normalization.
 
     Keyword Parameters:
 
@@ -472,7 +494,7 @@ class Database(object):
     groups = self.__check_validity__(groups, "group", VALID_GROUPS)
 
     # iterate over the lists and extract the files
-    # we assume that the is no duplicate file here...
+    # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
       retval.extend([file for file in read_list(self.get_list_file(group, 'for_znorm'), group, 'for_znorm', self.m_store_lists)])
