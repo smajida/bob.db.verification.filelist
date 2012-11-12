@@ -131,16 +131,18 @@ def _read_column_list(list_file, column_count):
   # extract the file from the first two columns
   file_list = []
   for row in rows:
-    assert len(row) == column_count
     if column_count == 2:
+      assert len(row) == 2
       # we expect: filename client_id
       file_list.append(File(file_name = row[0], client_id = row[1]))
     elif column_count == 3:
+      assert len(row) in (2, 3)
       # we expect: filename, model_id, client_id
-      file_list.append(File(file_name = row[0], client_id = row[2], model_id = row[1]))
+      file_list.append(File(file_name = row[0], client_id = row[2] if len(row) > 2 else row[1], model_id = row[1]))
     elif column_count == 4:
+      assert len(row) in (3, 4)
       # we expect: filename, model_id, claimed_id, client_id
-      file_list.append(File(file_name = row[0], client_id = row[3], model_id = row[1], claimed_id = row[2]))
+      file_list.append(File(file_name = row[0], client_id = row[3] if len(row) > 3 else row[1], model_id = row[1], claimed_id = row[2]))
     else:
       raise ValueError("The given column count %d cannot be interpreted. This is a BUG, please report to the author." % column_count)
 
