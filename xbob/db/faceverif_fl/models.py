@@ -27,21 +27,20 @@ import bob
 import fileinput
 import re
 
+import xbob.db.verification.utils
+
 class Client:
   """The clients of this database contain ONLY client ids. Nothing special."""
   def __init__(self, client_id):
     self.id = client_id
 
 
-class File:
+class File (xbob.db.verification.utils.File):
   """Files of this database are composed from the client id, a file id, (a model id) and a claimed (client) id."""
   def __init__(self, file_name, client_id, model_id = None, claimed_id = None):
+    # call base class constructor
     # the file id is the full file name
-    self.id = file_name
-    self.path = file_name
-
-    # the client id must be specified
-    self.client_id = client_id
+    xbob.db.verification.utils.File.__init__(self, file_id = file_name, path = file_name, client_id = client_id)
 
     # Note: in case of probe files, model ids are considered to be the ids of the model for the given probe file.
     # Hence, there might be several probe files with the same file id, but different model ids.
@@ -50,51 +49,6 @@ class File:
     self._model_id = client_id if model_id is None else model_id
     # when the claimed id is not specified, we use the client id instead
     self.claimed_id = client_id if claimed_id is None else claimed_id
-
-
-  def make_path(self, directory=None, extension=None):
-    """Wraps the current path so that a complete path is formed
-
-    Keyword parameters:
-
-    directory
-      An optional directory name that will be prefixed to the returned result.
-
-    extension
-      An optional extension that will be suffixed to the returned filename. The
-      extension normally includes the leading ``.`` character as in ``.jpg`` or
-      ``.hdf5``.
-
-    Returns a string containing the newly generated file path.
-    """
-
-    if not directory: directory = ''
-    if not extension: extension = ''
-
-    return os.path.join(directory, self.path + extension)
-
-
-  def save(self, data, directory=None, extension='.hdf5'):
-    """Saves the input data at the specified location and using the given
-    extension.
-
-    Keyword parameters:
-
-    data
-      The data blob to be saved (normally a :py:class:`numpy.ndarray`).
-
-    directory
-      If not empty or None, this directory is prefixed to the final file
-      destination
-
-    extension
-      The extension of the filename - this will control the type of output and
-      the codec for saving the input blob.
-    """
-
-    path = self.make_path(directory, extension)
-    bob.utils.makedirs_safe(os.path.dirname(path))
-    bob.io.save(data, path)
 
 
 

@@ -10,7 +10,9 @@ import os
 
 from .models import Client, File, read_list, read_models
 
-class Database(object):
+import xbob.db.verification.utils
+
+class Database(xbob.db.verification.utils.ZTDatabase):
   """This class provides a user-friendly interface to databases that are given as file lists.
   The API is comparable to other xbob.db databases."""
 
@@ -35,8 +37,8 @@ class Database(object):
     """Initializes the database with the file lists from the given base directory,
     and the given sub-directories and file names (which default to useful values if not given)."""
 
-    from .driver import Interface
-    self.info = Interface()
+    # call base class constrcutor
+    xbob.db.verification.utils.ZTDatabase.__init__(self)
 
     self.m_base_dir = os.path.abspath(base_dir)
     if not os.path.isdir(self.m_base_dir):
@@ -100,15 +102,6 @@ class Database(object):
                    }[type]
       return os.path.join(self.get_base_directory(), group_dir, list_name)
 
-  def __check_validity__(self, l, obj, valid):
-    """Checks validity of user input data against a set of valid values"""
-    if not l: return valid
-    elif isinstance(l, str): return self.__check_validity__((l,), obj, valid)
-    for k in l:
-      if k not in valid:
-        raise RuntimeError, 'Invalid %s "%s". Valid values are %s, or lists/tuples of those' % (obj, k, valid)
-    return l
-
 
   def get_client_id_from_model_id(self, model_id, groups=None):
     """Returns the client id that is connected to the given model id.
@@ -125,8 +118,7 @@ class Database(object):
 
     Returns: The client id for the given model id, if found.
     """
-    VALID_GROUPS = ('dev', 'eval', 'world')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
 
     for group in groups:
       model_dict = read_models(self.get_list_file(group, 'for_models'), group, 'for_models', self.m_store_lists)
@@ -151,8 +143,7 @@ class Database(object):
 
     Returns: The client id for the given model id of a T-Norm model, if found.
     """
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     for group in groups:
       model_dict = read_models(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm', self.m_store_lists)
@@ -237,8 +228,7 @@ class Database(object):
     Returns: A list containing all the client ids which have the given properties.
     """
 
-    VALID_GROUPS = ('dev', 'eval', 'world')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
 
     return self.__client_id_list__(groups, 'for_models')
 
@@ -257,8 +247,7 @@ class Database(object):
     Returns: A list containing all the T-Norm client ids which have the given properties.
     """
 
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     return self.__client_id_list__(groups, 'for_tnorm')
 
@@ -277,8 +266,7 @@ class Database(object):
     Returns: A list containing all the Z-Norm client ids which have the given properties.
     """
 
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     return self.__client_id_list__(groups, 'for_znorm')
 
@@ -307,8 +295,7 @@ class Database(object):
     Returns: A list containing all the model ids which have the given properties.
     """
 
-    VALID_GROUPS = ('dev', 'eval', 'world')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
 
     return self.__model_id_list__(groups, 'for_models')
 
@@ -327,8 +314,7 @@ class Database(object):
     Returns: A list containing all the T-Norm model ids belonging to the given group.
     """
 
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     return self.__model_id_list__(groups, 'for_tnorm')
 
@@ -370,14 +356,9 @@ class Database(object):
     if self.m_use_dense_probes and classes is not None:
       raise ValueError("To be able to use the 'classes' keyword, please use the 'for_scores.lst' list file.")
 
-    VALID_PURPOSES = ('enrol', 'probe')
-    VALID_GROUPS = ('dev', 'eval', 'world')
-    VALID_CLASSES = ('client', 'impostor')
-
-    purposes = self.__check_validity__(purposes, "purpose", VALID_PURPOSES)
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
-    classes = self.__check_validity__(classes, "class", VALID_CLASSES)
-
+    purposes = self.check_parameters_for_validity(purposes, "purpose", ('enrol', 'probe'))
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
+    classes = self.check_parameters_for_validity(classes, "class", ('client', 'impostor'))
 
     if (isinstance(model_ids, str)):
       model_ids = (model_ids,)
@@ -458,9 +439,7 @@ class Database(object):
     Returns: A list of File objects considering all the filtering criteria.
     """
 
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
-
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     if(isinstance(model_ids, str)):
       model_ids = (model_ids,)
@@ -490,8 +469,7 @@ class Database(object):
     Returns: A list of File objects considering all the filtering criteria.
     """
 
-    VALID_GROUPS = ('dev', 'eval')
-    groups = self.__check_validity__(groups, "group", VALID_GROUPS)
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     # iterate over the lists and extract the files
     # we assume that there is no duplicate file here...
