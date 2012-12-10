@@ -66,7 +66,7 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
     self.assertEqual(db.get_client_id_from_tmodel_id('7'), '7')
 
 
-  def test01a_query_dense(self):
+  def test02_query_dense(self):
     from pkg_resources import resource_filename
     example_data = resource_filename(__name__, 'example_fl')
     db = Database(example_data, probes_filename = 'for_probes.lst')
@@ -77,14 +77,12 @@ class Faceverif_flDatabaseTest(unittest.TestCase):
     self.assertEqual(len(db.objects(groups='dev', purposes='probe')), 8) # 8 samples as probes in the dev set
 
 
-  def test02_manage_dumplist_1(self):
+  def test03_driver_api(self):
     from bob.db.script.dbmanage import main
     from pkg_resources import resource_filename
     example_data = resource_filename(__name__, 'example_fl')
-    self.assertEqual(main('faceverif_fl dumplist -b'.split() + [example_data, '--self-test']), 0)
+    self.assertEqual(main(('faceverif_fl dumplist --list-directory=%s --self-test' % example_data).split()), 0)
+    self.assertEqual(main(('faceverif_fl dumplist --list-directory=%s --purpose=enrol --group=dev --class=client --self-test' % example_data).split()), 0)
+    self.assertEqual(main(('faceverif_fl checkfiles --list-directory=%s --self-test' % example_data).split()), 0)
 
-  def test03_manage_checkfiles(self):
-    from bob.db.script.dbmanage import main
-    from pkg_resources import resource_filename
-    example_data = resource_filename(__name__, 'example_fl')
-    self.assertEqual(main('faceverif_fl checkfiles -b'.split() + [example_data, '--self-test']), 0)
+
