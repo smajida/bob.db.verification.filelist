@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.faceverif_fl',
-    version='1.0.0a1',
+    version='1.0.0',
     description='Face Verification File List Database Access API for Bob',
     url='http://github.com/bioidiap/bob.db.faceverif_fl',
     license='GPLv3',
