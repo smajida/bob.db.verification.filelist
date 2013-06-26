@@ -8,7 +8,7 @@ face verification database based on file lists in the most obvious ways.
 
 import os
 
-from .models import Client, File, read_list, read_models
+from .models import Client, File, ListReader
 
 import xbob.db.verification.utils
 
@@ -75,7 +75,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     else:
       raise ValueError("Unable to determine, which way of probing should be used. Please specify.")
 
-    self.m_store_lists = keep_read_lists_in_memory
+    self.m_list_reader = ListReader(keep_read_lists_in_memory)
 
   def get_base_directory(self):
     """Returns the base directory where the filelists defining the database
@@ -121,7 +121,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
 
     for group in groups:
-      model_dict = read_models(self.get_list_file(group, 'for_models'), group, 'for_models', self.m_store_lists)
+      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_models'), group, 'for_models')
       if model_id in model_dict:
         return model_dict[model_id]
 
@@ -146,7 +146,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     for group in groups:
-      model_dict = read_models(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm', self.m_store_lists)
+      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm')
       if model_id in model_dict:
         return model_dict[model_id]
 
@@ -208,7 +208,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     ids = set()
     # read all lists for all groups and extract the model ids
     for group in groups:
-      files = read_list(self.get_list_file(group, type), group, type, self.m_store_lists)
+      files = self.m_list_reader.read_list(self.get_list_file(group, type), group, type)
       for file in files:
         ids.add(file.client_id)
     return ids
@@ -276,7 +276,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     ids = set()
     # read all lists for all groups and extract the model ids
     for group in groups:
-      dict = read_models(self.get_list_file(group, type), group, type, self.m_store_lists)
+      dict = self.m_list_reader.read_models(self.get_list_file(group, type), group, type)
       ids.update(dict.keys())
     return list(ids)
 
@@ -367,17 +367,17 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     lists = []
     probe_lists = []
     if 'world' in groups:
-      lists.append(read_list(self.get_list_file('world'), 'world', store_lists = self.m_store_lists))
+      lists.append(self.m_list_reader.read_list(self.get_list_file('world'), 'world'))
 
     for group in ('dev', 'eval'):
       if group in groups:
         if 'enrol' in purposes:
-          lists.append(read_list(self.get_list_file(group, 'for_models'), group, 'for_models', self.m_store_lists))
+          lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_models'), group, 'for_models'))
         if 'probe' in purposes:
           if self.m_use_dense_probes:
-            probe_lists.append(read_list(self.get_list_file(group, 'for_probes'), group, 'for_probes', self.m_store_lists))
+            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_probes'), group, 'for_probes'))
           else:
-            probe_lists.append(read_list(self.get_list_file(group, 'for_scores'), group, 'for_scores', self.m_store_lists))
+            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_scores'), group, 'for_scores'))
 
     # now, go through the lists and filter the elements
 
@@ -448,7 +448,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
-      for file in read_list(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm', self.m_store_lists):
+      for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm'):
         if model_ids is None or file._model_id in model_ids:
           retval.append(file)
 
@@ -475,6 +475,6 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
-      retval.extend([file for file in read_list(self.get_list_file(group, 'for_znorm'), group, 'for_znorm', self.m_store_lists)])
+      retval.extend([file for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_znorm'), group, 'for_znorm')])
 
     return retval
