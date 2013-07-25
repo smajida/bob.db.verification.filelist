@@ -125,7 +125,7 @@ class ListReader:
 
   def read_list(self, list_file, group, type = None):
     """Reads the list of Files from the given list file (if not done yet) and returns it."""
-    if group == 'world':
+    if group in ('world', 'optional_world_1', 'optional_world_2'):
       if group not in self.m_read_lists:
         # read the world list into memory
         list = self._read_column_list(list_file, 2)
@@ -134,6 +134,7 @@ class ListReader:
         return list
       # just return the previously read list
       return self.m_read_lists[group]
+    
     else:
       if group not in self.m_read_lists:
         self.m_read_lists[group] = {}
@@ -153,7 +154,7 @@ class ListReader:
 
   def read_models(self, list_file, group, type= None):
     """Generates a dictionary from model_ids to client_ids for the given list file, if not done yet, and returns it"""
-    assert group in ('dev', 'eval', 'world')
+    assert group in ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2')
     assert type in ('for_models', 'for_tnorm')
     if group not in self.m_model_dicts:
       self.m_model_dicts[group] = {}

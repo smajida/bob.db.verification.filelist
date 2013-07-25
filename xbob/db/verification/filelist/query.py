@@ -23,6 +23,8 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       eval_subdir = None,
 
       world_filename = None,
+      optional_world_1_filename = None,
+      optional_world_2_filename = None,
       models_filename = None,
 
       # For probing, use ONE of the two score file lists:
@@ -50,6 +52,10 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     # training list:     format:   filename client_id
     self.m_world_filename = world_filename if world_filename is not None else os.path.join('norm', 'train_world.lst')
+    # optional training list 1:     format:   filename client_id
+    self.m_optional_world_1_filename = optional_world_1_filename if optional_world_1_filename is not None else os.path.join('norm', 'train_optional_world_1.lst')
+    # optional training list 2:     format:   filename client_id
+    self.m_optional_world_2_filename = optional_world_2_filename if optional_world_2_filename is not None else os.path.join('norm', 'train_optional_world_2.lst')
     # model list:        format:   filename model_id client_id
     self.m_models_filename = models_filename if models_filename is not None else 'for_models.lst'
     # scores list:       format:   filename model_id claimed_client_id client_id
@@ -92,6 +98,10 @@ class Database(xbob.db.verification.utils.ZTDatabase):
   def get_list_file(self, group, type = None):
     if group == 'world':
       return os.path.join(self.get_base_directory(), self.m_world_filename)
+    elif group == 'optional_world_1':
+      return os.path.join(self.get_base_directory(), self.m_optional_world_1_filename)
+    elif group == 'optional_world_2':
+      return os.path.join(self.get_base_directory(), self.m_optional_world_2_filename)
     else:
       group_dir = self.m_dev_subdir if group == 'dev' else self.m_eval_subdir
       list_name = { 'for_models' : self.m_models_filename,
@@ -113,12 +123,12 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups
       (optional) the groups, the client belongs to.
-      Might be one or more of ('dev', 'eval', 'world').
+      Might be one or more of ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2').
       If groups are given, only these groups are considered.
 
     Returns: The client id for the given model id, if found.
     """
-    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
     for group in groups:
       model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_models'), group, 'for_models')
@@ -138,7 +148,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups
       (optional) the groups, the client belongs to.
-      Might be one or more of ('dev', 'eval', 'world').
+      Might be one or more of ('dev', 'eval').
       If groups are given, only these groups are considered.
 
     Returns: The client id for the given model id of a T-Norm model, if found.
@@ -162,7 +172,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       Ignored.
 
     groups
-      The groups to which the clients belong ("dev", "eval", "world").
+      The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
     Returns: A list containing all the Client objects which have the given properties.
     """
@@ -223,12 +233,12 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       Ignored.
 
     groups
-      The groups to which the clients belong ("dev", "eval", "world").
+      The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
     Returns: A list containing all the client ids which have the given properties.
     """
 
-    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
     return self.__client_id_list__(groups, 'for_models')
 
@@ -290,12 +300,12 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       Ignored.
 
     groups
-      The groups to which the models belong ("dev", "eval", "world").
+      The groups to which the models belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
     Returns: A list containing all the model ids which have the given properties.
     """
 
-    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
     return self.__model_id_list__(groups, 'for_models')
 
@@ -332,7 +342,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       The purposes required to be retrieved ("enrol", "probe") or a tuple
       with several of them. If 'None' is given (this is the default), it is
       considered the same as a tuple with all possible values. This field is
-      ignored for the data from the "world" group.
+      ignored for the data from the "world", "optional_world_1", "optional_world_2" groups.
 
     model_ids
       Only retrieves the files for the provided list of model ids (claimed
@@ -340,7 +350,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       the model_ids is performed.
 
     groups
-      One of the groups ("dev", "eval", "world") or a tuple with several of them.
+      One of the groups ("dev", "eval", "world", "optional_world_1", "optional_world_2") or a tuple with several of them.
       If 'None' is given (this is the default), it is considered the same as a
       tuple with all possible values.
 
@@ -357,7 +367,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       raise ValueError("To be able to use the 'classes' keyword, please use the 'for_scores.lst' list file.")
 
     purposes = self.check_parameters_for_validity(purposes, "purpose", ('enrol', 'probe'))
-    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world'))
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
     classes = self.check_parameters_for_validity(classes, "class", ('client', 'impostor'))
 
     if (isinstance(model_ids, str)):
@@ -368,6 +378,10 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     probe_lists = []
     if 'world' in groups:
       lists.append(self.m_list_reader.read_list(self.get_list_file('world'), 'world'))
+    if 'optional_world_1' in groups:
+      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_1'), 'optional_world_1'))
+    if 'optional_world_2' in groups:
+      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_2'), 'optional_world_2'))
 
     for group in ('dev', 'eval'):
       if group in groups:
