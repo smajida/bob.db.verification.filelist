@@ -33,6 +33,8 @@ class Verification_fileList_DatabaseTest(unittest.TestCase):
 
     self.assertEqual(len(db.client_ids()), 6) # 6 client ids for world, dev and eval
     self.assertEqual(len(db.client_ids(groups='world')), 2) # 2 client ids for world
+    self.assertEqual(len(db.client_ids(groups='optional_world_1')), 2) # 2 client ids for optional world 1
+    self.assertEqual(len(db.client_ids(groups='optional_world_2')), 2) # 2 client ids for optional world 2
     self.assertEqual(len(db.client_ids(groups='dev')), 2) # 2 client ids for dev
     self.assertEqual(len(db.client_ids(groups='eval')), 2) # 2 client ids for eval
 
@@ -41,6 +43,8 @@ class Verification_fileList_DatabaseTest(unittest.TestCase):
 
     self.assertEqual(len(db.model_ids()), 6) # 6 model ids for world, dev and eval
     self.assertEqual(len(db.model_ids(groups='world')), 2) # 2 model ids for world
+    self.assertEqual(len(db.model_ids(groups='optional_world_1')), 2) # 2 model ids for optional world 1
+    self.assertEqual(len(db.model_ids(groups='optional_world_2')), 2) # 2 model ids for optional world 2
     self.assertEqual(len(db.model_ids(groups='dev')), 2) # 2 model ids for dev
     self.assertEqual(len(db.model_ids(groups='eval')), 2) # 2 model ids for eval
 

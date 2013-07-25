@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Laurent El Shafey <laurent.el-shafey@idiap.ch>
+# Elie Khoury <Elie.Khoury@idiap.ch>
 
 """Commands the Face Verification File Lists database can respond to.
 """
@@ -90,7 +91,7 @@ class Interface(BaseInterface):
     parser.add_argument('-d', '--directory', default='', help="if given, this path will be prepended to every entry returned.")
     parser.add_argument('-e', '--extension', default='', help="if given, this extension will be appended to every entry returned.")
     parser.add_argument('-u', '--purpose', help="if given, this value will limit the output files to those designed for the given purposes.", choices=('enrol', 'probe', ''))
-    parser.add_argument('-g', '--group', help="if given, this value will limit the output files to those belonging to a particular protocolar group.", choices=('dev', 'eval', 'world', ''))
+    parser.add_argument('-g', '--group', help="if given, this value will limit the output files to those belonging to a particular protocolar group.", choices=('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2', ''))
     parser.add_argument('-c', '--class', dest="sclass", help="if given, this value will limit the output files to those belonging to the given classes.", choices=('client', 'impostor', ''))
     parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
     parser.set_defaults(func=dumplist) #action
