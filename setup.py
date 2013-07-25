@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Laurent El Shafey <laurent.el-shafey@idiap.ch>
+# modified by Elie Khoury <elie.khoury@idiap.ch>
 
 from setuptools import setup, find_packages
 
@@ -8,10 +9,10 @@ from setuptools import setup, find_packages
 # parameters that define our package.
 setup(
 
-    name='xbob.db.faceverif_fl',
+    name='xbob.db.verification.filelist',
     version='1.1.1',
     description='Face Verification File List Database Access API for Bob',
-    url='http://github.com/bioidiap/bob.db.faceverif_fl',
+    url='http://github.com/bioidiap/bob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
@@ -37,12 +38,12 @@ setup(
 
       # declare database to bob
       'bob.db': [
-        'faceverif_fl = xbob.db.faceverif_fl.driver:Interface',
+        'filelist = xbob.db.verification.filelist.driver:Interface',
         ],
 
       # declare tests to bob
       'bob.test': [
-        'faceverif_fl = xbob.db.faceverif_fl.test:Faceverif_flDatabaseTest',
+        'filelist = xbob.db.verification.filelist.test:Verification_fileList_DatabaseTest',
         ],
 
       },
