@@ -2,8 +2,8 @@
 .. Andre Anjos <andre.anjos@idiap.ch>
 .. Mon 13 Aug 2012 12:36:40 CEST 
 
-========================
- NUAA Spoofing Database
-========================
+================================
+ Verification Filelist Database
+================================
 
-.. automodule:: xbob.db.nuaa
+.. automodule:: xbob.db.verification.filelist

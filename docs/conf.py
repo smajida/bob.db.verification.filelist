@@ -68,7 +68,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'NUAA Spoofing Database (Bob API)'
+project = u'Verification Filelist Database (Bob API)'
 import time
 copyright = u'%s, Idiap Research Institute' % time.strftime('%Y')
 
@@ -77,7 +77,7 @@ copyright = u'%s, Idiap Research Institute' % time.strftime('%Y')
 # built documents.
 #
 # The short X.Y version.
-from xbob.db.nuaa.driver import Interface
+from xbob.db.verification.filelist.driver import Interface
 version = Interface().version()
 # The full version, including alpha/beta/rc tags.
 release = version
@@ -244,7 +244,7 @@ rst_epilog = ''
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'bob', u'NUAA Spoofing Database (Bob API) Documentation', [u'Idiap Research Institute'], 1)
+    ('index', 'bob', u'Verification Filelist Database (Bob API) Documentation', [u'Idiap Research Institute'], 1)
 ]
 
 

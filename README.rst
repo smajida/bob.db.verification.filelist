@@ -1,9 +1,9 @@
-===========================================
- Face Verification File Lists Database API
-===========================================
+======================================
+ Verification File Lists Database API
+======================================
 
-The Face Verification File Lists database API provides mechanisms to create
-an API for a face verifcation database and protocol, the user providing 
+The Verification Filelist database API provides mechanisms to create
+an API for a verifcation database and protocol, the user providing 
 file lists.
 
 You would normally not install this package unless you are maintaining it. What

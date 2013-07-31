@@ -3,7 +3,7 @@
 # Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
 
 """This module provides the Dataset interface allowing the user to query the
-face verification database based on file lists in the most obvious ways.
+verification database based on file lists in the most obvious ways.
 """
 
 import os
