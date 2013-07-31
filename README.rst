@@ -45,11 +45,11 @@ script)::
 
     install_requires=[
       ...
-      "xbob.db.faceverification_fl",
+      "xbob.db.verification.filelist",
     ],
 
 Proceed normally with your ``boostrap/buildout`` steps and you should be all
-set. That means you can now import the namespace ``xbob.db.faceverification_fl`` into your scripts.
+set. That means you can now import the namespace ``xbob.db.verification.filelist`` into your scripts.
 
 Modify your buildout.cfg and download from git
 ==============================================
@@ -65,8 +65,8 @@ lines::
   auto-checkout = *
   eggs = bob
          ...
-         xbob.db.faceverification_fl
+         xbob.db.verification.filelist
 
   [sources]
-  xbob.db.faceverication_fl = git https://github.com/bioidiap/xbob.db.faceverification_fl.git
+  xbob.db.verification.filelist = git https://github.com/bioidiap/xbob.db.verification.filelist.git
   ...
