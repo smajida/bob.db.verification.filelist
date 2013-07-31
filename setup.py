@@ -10,8 +10,8 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.verification.filelist',
-    version='1.2.0',
-    description='Face Verification File List Database Access API for Bob',
+    version='1.3.0',
+    description='Verification File List Database Access API for Bob',
     url='http://github.com/bioidiap/xbob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
