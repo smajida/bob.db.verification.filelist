@@ -12,7 +12,7 @@ setup(
     name='xbob.db.verification.filelist',
     version='1.2.0',
     description='Face Verification File List Database Access API for Bob',
-    url='http://github.com/bioidiap/bob.db.verification.filelist',
+    url='http://github.com/bioidiap/xbob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
