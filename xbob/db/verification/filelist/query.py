@@ -44,7 +44,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     self.m_base_dir = os.path.abspath(base_dir)
     if not os.path.isdir(self.m_base_dir):
-      raise RuntimeError, 'Invalid directory specified %s.' % (self.m_base_dir)
+      raise RuntimeError('Invalid directory specified %s.' % (self.m_base_dir))
 
     # sub-directories for dev and eval set:
     self.m_dev_subdir = dev_subdir if dev_subdir is not None else 'dev'
@@ -93,7 +93,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       are located."""
     self.m_base_dir = base_dir
     if not os.path.isdir(self.base_dir):
-      raise RuntimeError, 'Invalid directory specified %s.' % (self.base_dir)
+      raise RuntimeError('Invalid directory specified %s.' % (self.base_dir))
 
   def get_list_file(self, group, type = None):
     if group == 'world':

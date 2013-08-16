@@ -67,7 +67,7 @@ class ListReader:
   def _read_multi_column_list(self, list_file):
     rows = []
     if not os.path.isfile(list_file):
-      raise RuntimeError, 'File %s does not exist.' % (list_file,)
+      raise RuntimeError('File %s does not exist.' % (list_file,))
     try:
       for line in fileinput.input(list_file):
         parsed_line = re.findall('[\w/(-.)]+', line)
@@ -81,7 +81,7 @@ class ListReader:
           rows.append(parsed_line)
       fileinput.close()
     except IOError as e:
-      raise RuntimeError, 'Error reading the file %s.' % (list_file,)
+      raise RuntimeError('Error reading the file %s.' % (list_file,))
 
     # return the read list as a vector of columns
     return rows
