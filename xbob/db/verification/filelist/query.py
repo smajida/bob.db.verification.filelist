@@ -7,6 +7,7 @@ verification database based on file lists in the most obvious ways.
 """
 
 import os
+import six
 
 from .models import Client, File, ListReader
 
@@ -370,8 +371,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
     classes = self.check_parameters_for_validity(classes, "class", ('client', 'impostor'))
 
-    if (isinstance(model_ids, str)):
-      model_ids = (model_ids,)
+    if isinstance(model_ids, six.string_types): model_ids = (model_ids,)
 
     # first, collect all the lists that we want to process
     lists = []

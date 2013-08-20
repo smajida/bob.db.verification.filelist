@@ -25,6 +25,7 @@ setup(
 
     install_requires=[
       'setuptools',
+      'six',  # python2/3 compatibility package
       'bob',  # base signal proc./machine learning library
       'xbob.db.verification.utils' # defines a set of utilities for face verification databases like this one.
     ],
