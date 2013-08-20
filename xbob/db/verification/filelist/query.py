@@ -455,7 +455,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
-    if(isinstance(model_ids, str)):
+    if(isinstance(model_ids, six.string_types)):
       model_ids = (model_ids,)
 
     # iterate over the lists and extract the files
