@@ -82,29 +82,29 @@ The initial step for using this package is to provide file lists specifying the 
  
     filename client_id
 
-2. *two optional world files*, with default names ``train_optional_world_1.lst`` and ``train_optional_world_2.lst``, and default subdirectory ``norm``. The format is the same as for the world file.
+2. two optional *world files*, with default names ``train_optional_world_1.lst`` and ``train_optional_world_2.lst``, and default subdirectory ``norm``. The format is the same as for the world file.
 
 - **For enrollment**:
 
-1. *two model files* for the development and evaluation set, with default name ``for_models.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+1. two *model files* for the development and evaluation set, with default name ``for_models.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
   
     filename model_id client_id
 
 - **For scoring**:
 
-1. *two probe files* for the development and evaluation set, with default name ``for_probes.lst`` and default subdirectories ``dev`` and ``eval`` respectively. These files need to be provided only if the scoring is to be done exhaustively, meaning by creating a dense probe/model scoring matrix. They are 2-column files with format:: 
+1. two *probe files* for the development and evaluation set, with default name ``for_probes.lst`` and default subdirectories ``dev`` and ``eval`` respectively. These files need to be provided only if the scoring is to be done exhaustively, meaning by creating a dense probe/model scoring matrix. They are 2-column files with format:: 
   
     filename client_id
 
-2. *two score files* for the development and evaluation set, with default name ``for_scores.lst`` and default subdirectories ``dev`` and ``eval`` respectively.  These files need to be provided only if the scoring is to be done selectively, meaning by creating a sparse probe/model scoring matrix. They are 4-column files with format:: 
+2. two *score files* for the development and evaluation set, with default name ``for_scores.lst`` and default subdirectories ``dev`` and ``eval`` respectively.  These files need to be provided only if the scoring is to be done selectively, meaning by creating a sparse probe/model scoring matrix. They are 4-column files with format:: 
 
     filename model_id claimed_client_id client_id
 
-3. *two files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+3. two *files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
   
     filename model_id client_id
 
-4. *two files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
+4. two *files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
 
     filename client_id
 
