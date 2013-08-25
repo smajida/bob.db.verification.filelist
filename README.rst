@@ -70,3 +70,43 @@ lines::
   [sources]
   xbob.db.verification.filelist = git https://github.com/bioidiap/xbob.db.verification.filelist.git
   ...
+  
+Creating file lists
+===================
+
+The initial step for using this package is to provide file lists specifying the world (train), development and evaluation set to be used by the biometric verification algorithm. The following files need to be created:
+
+- **For training**:
+
+1. world file, with default name ``train_world.lst``, and default subdirectory ``norm``. It is a 2-column file with format::
+ 
+    filename client_id
+
+2. two optional world files, with default names ``train_optional_world_1.lst`` and ``train_optional_world_2.lst``, and default subdirectory ``norm``. The format is the same as for the world file.
+
+- **For enrollment**:
+
+1. two model files for the development and evaluation set, with default name ``for_models.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+  
+    filename model_id client_id
+
+- **For scoring**:
+
+1. two probe files for the development and evaluation set, with default name ``for_probes.lst`` and default subdirectories ``dev`` and ``eval`` respectively. These files need to be provided only if the scoring is to be done exhaustively, meaning by creating a dense probe/model scoring matrix. They are 2-column files with format:: 
+  
+    filename client_id
+
+2. two score files for the development and evaluation set, with default name ``for_scores.lst`` and default subdirectories ``dev`` and ``eval`` respectively.  These files need to be provided only if the scoring is to be done selectively, meaning by creating a sparse probe/model scoring matrix. They are 4-column files with format:: 
+
+    filename model_id claimed_client_id client_id
+
+3. two files for t-score normalization for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+  
+    filename model_id client_id
+
+4. two files for z-score normalization for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
+
+    filename client_id
+
+Note that the verification algorithm will use either only the probe or only the score files, so only one of them is mandatory. In case both probe and score files are provided, the algorithm will use the parameter ``use_dense_probe_file_list`` when creating the object of the ``Database`` class.
+
