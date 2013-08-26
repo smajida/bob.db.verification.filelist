@@ -10,7 +10,7 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.verification.filelist',
-    version='1.3.1',
+    version='1.3.2a0',
     description='Verification File List Database Access API for Bob',
     url='https://pypi.python.org/pypi/xbob.db.verification.filelist',
     license='GPLv3',
