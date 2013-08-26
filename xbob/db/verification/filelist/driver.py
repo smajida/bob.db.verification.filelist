@@ -18,7 +18,8 @@ def dumplist(args):
   r = db.objects(
       purposes=args.purpose,
       groups=args.group,
-      classes=args.sclass
+      classes=args.sclass,
+      protocol=args.protocol
   )
 
   output = sys.stdout
@@ -37,7 +38,7 @@ def checkfiles(args):
   from .query import Database
   db = Database(args.list_directory, use_dense_probe_file_list = False)
 
-  r = db.objects()
+  r = db.objects(protocol=args.protocol)
 
   # go through all files, check if they are available on the filesystem
   good = []
@@ -92,6 +93,7 @@ class Interface(BaseInterface):
     parser.add_argument('-u', '--purpose', help="if given, this value will limit the output files to those designed for the given purposes.", choices=('enrol', 'probe', ''))
     parser.add_argument('-g', '--group', help="if given, this value will limit the output files to those belonging to a particular protocolar group.", choices=('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2', ''))
     parser.add_argument('-c', '--class', dest="sclass", help="if given, this value will limit the output files to those belonging to the given classes.", choices=('client', 'impostor', ''))
+    parser.add_argument('-p', '--protocol', default=None, help="If set, the protocol is appended to the directory that contains the file lists.")
     parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
     parser.set_defaults(func=dumplist) #action
 
@@ -100,6 +102,7 @@ class Interface(BaseInterface):
     parser.add_argument('-l', '--list-directory', required=True, help="The directory which contains the file lists.")
     parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry returned.")
     parser.add_argument('-e', '--extension', dest="extension", default='', help="if given, this extension will be appended to every entry returned.")
+    parser.add_argument('-p', '--protocol', default=None, help="If set, the protocol is appended to the directory that contains the file lists.")
     parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
 
     parser.set_defaults(func=checkfiles) #action

@@ -15,7 +15,53 @@ import xbob.db.verification.utils
 
 class Database(xbob.db.verification.utils.ZTDatabase):
   """This class provides a user-friendly interface to databases that are given as file lists.
-  The API is comparable to other xbob.db databases."""
+  The API is comparable to other xbob.db databases.
+
+  Keyword parameters:
+
+  base_dir
+    The directory that contains the filelists defining the protocol(s). If you use the protocol
+    attribute when querying the database, it will be appended to the base directory, such that
+    several protocols are supported by the same class instance of xbob.db.verification.filelist.
+
+  dev_subdir
+    Specify a custom subdirectory for the filelists of the development set (default is 'dev')
+
+  eval_subdir
+    Specify a custom subdirectory for the filelists of the development set (default is 'dev')
+
+  world_filename
+    Specify a custom filename for the training filelist (default is 'norm/train_world.lst')
+
+  optional_world_1_filename
+    Specify a custom filename for the (first optional) training filelist 
+    (default is 'norm/train_optional_world_1.lst')
+
+  optional_world_2_filename
+    Specify a custom filename for the (second optional) training filelist 
+    (default is 'norm/train_optional_world_2.lst')
+
+  models_filename
+    Specify a custom filename for the model filelists (default is 'for_models.lst')
+
+  probes_filename
+    Specify a custom filename for the probes filelists (default is 'for_probes.lst')
+
+  scores_filename
+    Specify a custom filename for the scores filelists (default is 'for_scores.lst')
+
+  tnorm_filename
+    Specify a custom filename for the T-norm scores filelists (default is 'for_tnorm.lst')
+
+  znorm_filename
+    Specify a custom filename for the Z-norm scores filelists (default is 'for_znorm.lst')
+
+  use_dense_probe_file_list
+    Specify which list to use among 'probes_filename' (dense) or 'scores_filename'
+
+  keep_read_lists_in_memory
+    If set to true, the lists are read only once and stored in memory
+  """
 
   def __init__(
       self,
@@ -96,13 +142,17 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     if not os.path.isdir(self.base_dir):
       raise RuntimeError('Invalid directory specified %s.' % (self.base_dir))
 
-  def get_list_file(self, group, type = None):
+  def get_list_file(self, group, type = None, protocol = None):
+    if protocol:
+      base_directory = os.path.join(self.get_base_directory(), protocol)
+    else:
+      base_directory = self.get_base_directory()
     if group == 'world':
-      return os.path.join(self.get_base_directory(), self.m_world_filename)
+      return os.path.join(base_directory, self.m_world_filename)
     elif group == 'optional_world_1':
-      return os.path.join(self.get_base_directory(), self.m_optional_world_1_filename)
+      return os.path.join(base_directory, self.m_optional_world_1_filename)
     elif group == 'optional_world_2':
-      return os.path.join(self.get_base_directory(), self.m_optional_world_2_filename)
+      return os.path.join(base_directory, self.m_optional_world_2_filename)
     else:
       group_dir = self.m_dev_subdir if group == 'dev' else self.m_eval_subdir
       list_name = { 'for_models' : self.m_models_filename,
@@ -111,10 +161,10 @@ class Database(xbob.db.verification.utils.ZTDatabase):
                     'for_tnorm' : self.m_tnorm_filename,
                     'for_znorm' : self.m_znorm_filename
                    }[type]
-      return os.path.join(self.get_base_directory(), group_dir, list_name)
+      return os.path.join(base_directory, group_dir, list_name)
 
 
-  def get_client_id_from_model_id(self, model_id, groups=None):
+  def get_client_id_from_model_id(self, model_id, groups=None, protocol=None):
     """Returns the client id that is connected to the given model id.
 
     Keyword parameters:
@@ -127,19 +177,22 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       Might be one or more of ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2').
       If groups are given, only these groups are considered.
 
+    protocol
+      The protocol to consider
+
     Returns: The client id for the given model id, if found.
     """
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
     for group in groups:
-      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_models'), group, 'for_models')
+      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_models', protocol), group, 'for_models')
       if model_id in model_dict:
         return model_dict[model_id]
 
     raise ValueError("The given model id '%s' cannot be found in one of the groups '%s'" %(model_id, groups))
 
 
-  def get_client_id_from_tmodel_id(self, model_id, groups = None):
+  def get_client_id_from_tmodel_id(self, model_id, groups = None, protocol=None):
     """Returns the client id that is connected to the given T-Norm model id.
 
     Keyword parameters:
@@ -152,12 +205,15 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       Might be one or more of ('dev', 'eval').
       If groups are given, only these groups are considered.
 
+    protocol
+      The protocol to consider
+
     Returns: The client id for the given model id of a T-Norm model, if found.
     """
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
     for group in groups:
-      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm')
+      model_dict = self.m_list_reader.read_models(self.get_list_file(group, 'for_tnorm', protocol), group, 'for_tnorm')
       if model_id in model_dict:
         return model_dict[model_id]
 
@@ -170,7 +226,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
@@ -187,7 +243,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval").
@@ -204,7 +260,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the models belong ("dev", "eval").
@@ -215,11 +271,11 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     return [Client(id) for id in zclient_ids]
 
 
-  def __client_id_list__(self, groups, type):
+  def __client_id_list__(self, groups, type, protocol=None):
     ids = set()
     # read all lists for all groups and extract the model ids
     for group in groups:
-      files = self.m_list_reader.read_list(self.get_list_file(group, type), group, type)
+      files = self.m_list_reader.read_list(self.get_list_file(group, type, protocol), group, type)
       for file in files:
         ids.add(file.client_id)
     return ids
@@ -231,7 +287,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
@@ -241,7 +297,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
-    return self.__client_id_list__(groups, 'for_models')
+    return self.__client_id_list__(groups, 'for_models', protocol)
 
 
   def tclient_ids(self, protocol=None, groups=None):
@@ -250,7 +306,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval").
@@ -260,7 +316,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
-    return self.__client_id_list__(groups, 'for_tnorm')
+    return self.__client_id_list__(groups, 'for_tnorm', protocol)
 
 
   def zclient_ids(self, protocol=None, groups=None):
@@ -269,7 +325,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval").
@@ -279,15 +335,15 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
-    return self.__client_id_list__(groups, 'for_znorm')
+    return self.__client_id_list__(groups, 'for_znorm', protocol)
 
 
 
-  def __model_id_list__(self, groups, type):
+  def __model_id_list__(self, groups, type, protocol=None):
     ids = set()
     # read all lists for all groups and extract the model ids
     for group in groups:
-      dict = self.m_list_reader.read_models(self.get_list_file(group, type), group, type)
+      dict = self.m_list_reader.read_models(self.get_list_file(group, type, protocol), group, type)
       ids.update(dict.keys())
     return list(ids)
 
@@ -298,7 +354,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the models belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
@@ -308,7 +364,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
 
-    return self.__model_id_list__(groups, 'for_models')
+    return self.__model_id_list__(groups, 'for_models', protocol)
 
 
   def tmodel_ids(self, protocol=None, groups=None):
@@ -317,7 +373,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the models belong ("dev", "eval").
@@ -327,8 +383,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
 
-    return self.__model_id_list__(groups, 'for_tnorm')
-
+    return self.__model_id_list__(groups, 'for_tnorm', protocol)
 
 
   def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, classes=None):
@@ -337,7 +392,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     purposes
       The purposes required to be retrieved ("enrol", "probe") or a tuple
@@ -377,21 +432,21 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     lists = []
     probe_lists = []
     if 'world' in groups:
-      lists.append(self.m_list_reader.read_list(self.get_list_file('world'), 'world'))
+      lists.append(self.m_list_reader.read_list(self.get_list_file('world', protocol=protocol), 'world'))
     if 'optional_world_1' in groups:
-      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_1'), 'optional_world_1'))
+      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_1', protocol=protocol), 'optional_world_1'))
     if 'optional_world_2' in groups:
-      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_2'), 'optional_world_2'))
+      lists.append(self.m_list_reader.read_list(self.get_list_file('optional_world_2', protocol=protocol), 'optional_world_2'))
 
     for group in ('dev', 'eval'):
       if group in groups:
         if 'enrol' in purposes:
-          lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_models'), group, 'for_models'))
+          lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_models', protocol=protocol), group, 'for_models'))
         if 'probe' in purposes:
           if self.m_use_dense_probes:
-            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_probes'), group, 'for_probes'))
+            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_probes', protocol=protocol), group, 'for_probes'))
           else:
-            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_scores'), group, 'for_scores'))
+            probe_lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_scores', protocol=protocol), group, 'for_scores'))
 
     # now, go through the lists and filter the elements
 
@@ -440,7 +495,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     model_ids
       Only retrieves the files for the provided list of model ids (claimed
@@ -462,7 +517,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
-      for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_tnorm'), group, 'for_tnorm'):
+      for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_tnorm', protocol), group, 'for_tnorm'):
         if model_ids is None or file._model_id in model_ids:
           retval.append(file)
 
@@ -475,7 +530,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Keyword Parameters:
 
     protocol
-      Ignored.
+      The protocol to consider
 
     groups
       The groups to which the clients belong ("dev", "eval").
@@ -489,6 +544,6 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     # we assume that there is no duplicate file here...
     retval = []
     for group in groups:
-      retval.extend([file for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_znorm'), group, 'for_znorm')])
+      retval.extend([file for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_znorm', protocol), group, 'for_znorm')])
 
     return retval

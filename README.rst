@@ -3,7 +3,7 @@
 ======================================
 
 The Verification Filelist database API provides mechanisms to create
-an API for a verifcation database and protocol, the user providing 
+an API for a verification database and protocol, the user providing 
 file lists.
 
 You would normally not install this package unless you are maintaining it. What
@@ -22,10 +22,10 @@ There are a few ways to achieve this:
 
 The package is available in two different distribution formats:
 
-1. You can download it from `PyPI <http://pypi.python.org/pypi>`_, or
+1. You can download it from `PyPI <http://pypi.python.org/pypi/xbob.db.verification.filelist>`_, or
 
 2. You can download it in its source form from `its git repository
-   <https://github.com/bioidiap/xbob.db.nuaa>`_. When you download the
+   <https://github.com/bioidiap/xbob.db.verification.filelist>`_. When you download the
    version at the git repository, you will need to run a command to recreate
    the backend SQLite file required for its operation. This means that the
    database raw files must be installed somewhere in this case. With option
@@ -110,3 +110,30 @@ The initial step for using this package is to provide file lists specifying the 
 
 Note that the verification algorithm will use either only the probe or only the score files, so only one of them is mandatory. In case both probe and score files are provided, the algorithm will use the parameter ``use_dense_probe_file_list`` when creating the object of the ``Database`` class.
 
+
+Protocols and file lists
+========================
+
+When you instantiate a database, you have to specify the base directory that contains the file lists.
+If you have only a single protocol, you could specify the full path to the file lists described
+above as follows::
+
+  >>> db = xbob.db.verification.filelist('basedir/protocol')
+
+Next, you should query the data, WITHOUT specifying any protocol::
+  
+  >>> db.objects()
+
+Alternatively, you could do the following::
+
+  >>> db = xbob.db.verification.filelist('basedir')
+  >>> db.objects(protocol='protocol')
+
+When a protocol is specified, it is appended to the base directory that contains the file lists.
+This allows to use several protocols that are stored in the same base directory, without the need
+to instantiate a new database. For instance, given two protocols 'P1' and 'P2' (with filelists
+contained in 'basedir/P1' and 'basedir/P2', respectively), the following would work::
+
+  >> db = xbob.db.verification.filelist('basedir')
+  >> db.objects(protocol='P1') # Get the objects for the protocol P1
+  >> db.objects(protocol='P2') # Get the objects for the protocol P2

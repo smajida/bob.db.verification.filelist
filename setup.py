@@ -10,9 +10,9 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.verification.filelist',
-    version='1.3.1a0',
+    version='1.3.1',
     description='Verification File List Database Access API for Bob',
-    url='http://github.com/bioidiap/xbob.db.verification.filelist',
+    url='https://pypi.python.org/pypi/xbob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
@@ -40,12 +40,12 @@ setup(
 
       # declare database to bob
       'bob.db': [
-        'filelist = xbob.db.verification.filelist.driver:Interface',
+        'verification.filelist = xbob.db.verification.filelist.driver:Interface',
         ],
 
       # declare tests to bob
       'bob.test': [
-        'filelist = xbob.db.verification.filelist.test:Verification_fileList_DatabaseTest',
+        'verification.filelist = xbob.db.verification.filelist.test:VerificationFilelistTest',
         ],
 
       },
