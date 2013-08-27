@@ -1,6 +1,21 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Laurent El Shafey <Laurent.El-Shafey@idiap.ch>
+#
+# Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 """This module provides the Dataset interface allowing the user to query the
 verification database based on file lists in the most obvious ways.
@@ -119,14 +134,35 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       self.m_use_dense_probes = True
     elif probes_filename is None and scores_filename is not None:
       self.m_use_dense_probes = False
-    elif os.path.exists(self.get_list_file('dev', 'for_probes')) and not os.path.exists(self.get_list_file('dev', 'for_scores')):
-      self.m_use_dense_probes = True
-    elif not os.path.exists(self.get_list_file('dev', 'for_probes')) and os.path.exists(self.get_list_file('dev', 'for_scores')):
-      self.m_use_dense_probes = False
     elif use_dense_probe_file_list is not None:
       self.m_use_dense_probes = use_dense_probe_file_list
+    # Then direct path to a given protocol
+    elif os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)) or os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)) or os.path.isfile(os.path.join(self.get_base_directory(), self.m_world_filename)):
+      if os.path.exists(self.get_list_file('dev', 'for_probes')) and not os.path.exists(self.get_list_file('dev', 'for_scores')):
+        self.m_use_dense_probes = True
+      elif not os.path.exists(self.get_list_file('dev', 'for_probes')) and os.path.exists(self.get_list_file('dev', 'for_scores')):
+        self.m_use_dense_probes = False
+      else:
+        raise ValueError("Unable to determine, which way of probing should be used. Please specify.")
+    # Then path to a directory that contains several subdirectories (one for each protocol)
     else:
-      raise ValueError("Unable to determine, which way of probing should be used. Please specify.")
+      # Look at subdirectories for each protocol
+      protocols = [p for p in os.listdir(self.get_base_directory()) if os.path.isdir(os.path.join(self.get_base_directory(),p))]
+      if len(protocols) == 0:
+        raise ValueError("Unable to determine, which way of probing should be used (no protocol directories found). Please specify.")
+      list_use_dense_probes = []
+      for p in protocols:
+        if os.path.exists(self.get_list_file('dev', 'for_probes', p)) and not os.path.exists(self.get_list_file('dev', 'for_scores', p)):
+          use_dense_probes = True
+        elif not os.path.exists(self.get_list_file('dev', 'for_probes', p)) and os.path.exists(self.get_list_file('dev', 'for_scores', p)):
+          use_dense_probes = False
+        else:
+          raise ValueError("Unable to determine, which way of probing should be used, looking at the protocol (directory) '%s'. Please specify." % p)
+        list_use_dense_probes.append(use_dense_probes)
+      if len(set(list_use_dense_probes)) == 1:
+        self.m_use_dense_probes = list_use_dense_probes[0]
+      else:
+        raise ValueError("Unable to determine, which way of probing should be used, since this is not consistent accross protocols. Please specify.")
 
     self.m_list_reader = ListReader(keep_read_lists_in_memory)
 

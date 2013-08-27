@@ -137,3 +137,10 @@ contained in 'basedir/P1' and 'basedir/P2', respectively), the following would w
   >> db = xbob.db.verification.filelist('basedir')
   >> db.objects(protocol='P1') # Get the objects for the protocol P1
   >> db.objects(protocol='P2') # Get the objects for the protocol P2
+
+Note that if you use several protocols as explained above, the scoring part should be defined in
+the same way for all the protocols, either by using ``for_probes.lst`` or ``for_scores.lst``.
+This means that at the time of the database instantiation, it will be determined (or specified
+using the ``use_dense_probe_file_list`` optional argument), whether the protocols should use
+the content of ``for_probes.lst`` or ``for_scores.lst``. In particular, it is not possible to 
+use a mixture of those for different protocols, once the database object has been created.
