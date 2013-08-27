@@ -2,6 +2,21 @@
 # vim: set fileencoding=utf-8 :
 # Laurent El Shafey <laurent.el-shafey@idiap.ch>
 # modified by Elie Khoury <elie.khoury@idiap.ch>
+#
+# Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
 from setuptools import setup, find_packages
 
@@ -10,7 +25,7 @@ from setuptools import setup, find_packages
 setup(
 
     name='xbob.db.verification.filelist',
-    version='1.3.2a0',
+    version='1.3.2',
     description='Verification File List Database Access API for Bob',
     url='https://pypi.python.org/pypi/xbob.db.verification.filelist',
     license='GPLv3',
@@ -51,7 +66,7 @@ setup(
       },
 
     classifiers = [
-      'Development Status :: 4 - Beta',
+      'Development Status :: 5 - Production/Stable',
       'Intended Audience :: Developers',
       'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
       'Natural Language :: English',
