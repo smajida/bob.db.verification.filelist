@@ -31,6 +31,7 @@ setup(
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
+    keywords='bob, xbob, xbob.db, recognition, file lists',
     long_description=open('README.rst').read(),
 
     # This line is required for any distutils based packaging.
@@ -67,7 +68,10 @@ setup(
 
     classifiers = [
       'Development Status :: 5 - Production/Stable',
+      'Environment :: Console',
       'Intended Audience :: Developers',
+      'Intended Audience :: Education',
+      'Intended Audience :: Science/Research',
       'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
       'Natural Language :: English',
       'Programming Language :: Python',
