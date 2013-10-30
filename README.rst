@@ -82,7 +82,7 @@ The initial step for using this package is to provide file lists specifying the 
  
     filename client_id
 
-2. two optional *world files*, with default names ``train_optional_world_1.lst`` and ``train_optional_world_2.lst``, and default subdirectory ``norm``. The format is the same as for the world file.
+2. two (optional) *world files*, with default names ``train_optional_world_1.lst`` and ``train_optional_world_2.lst``, and default subdirectory ``norm``. The format is the same as for the world file. These files are not needed for the most of the face recognition algorithms, hence, they need to be specified only if the algorithm uses them.
 
 - **For enrollment**:
 
@@ -100,17 +100,37 @@ The initial step for using this package is to provide file lists specifying the 
 
     filename model_id claimed_client_id client_id
 
-3. two *files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+3. two (optional) *files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
   
     filename model_id client_id
 
-4. two *files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
+4. two (optional) *files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
 
     filename client_id
 
 Note that the verification algorithm will use either only the probe or only the score files, so only one of them is mandatory. In case both probe and score files are provided, the algorithm will use the parameter ``use_dense_probe_file_list`` when creating the object of the ``Database`` class.
 
+Also, note that if the database does not provide evaluation set, the scoring files can be ommited.
 
+The summarized structure of the base directory (here denoted as ``basedir``) containing all the files should be like this::
+
+  basedir -- norm -- train_world.rst
+         |       |-- train_optional_world_1.lst
+         |       |-- train_optional_world_2.lst
+         |
+         |-- dev -- for_models.lst
+         |      |-- for_probes.lst 
+         |      |-- for_scores.lst 
+         |      |-- for_tnorm.lst 
+         |      |-- for_znorm.lst 
+         |
+         |-- eval -- for_models.lst
+                 |-- for_probes.lst 
+                 |-- for_scores.lst 
+                 |-- for_tnorm.lst 
+                 |-- for_znorm.lst 
+     
+       
 Protocols and file lists
 ========================
 
@@ -124,7 +144,7 @@ Next, you should query the data, WITHOUT specifying any protocol::
   
   >>> db.objects()
 
-Alternatively, you could do the following::
+Alternatively, if you have more protocols, you could do the following::
 
   >>> db = xbob.db.verification.filelist('basedir')
   >>> db.objects(protocol='protocol')
