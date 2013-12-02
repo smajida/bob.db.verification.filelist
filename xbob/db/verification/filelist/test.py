@@ -31,6 +31,8 @@ class VerificationFilelistTest(unittest.TestCase):
     example_data = resource_filename(__name__, '.')
     db = Database(os.path.join(example_data, 'example_fl'), use_dense_probe_file_list = False)
 
+    self.assertEqual(len(db.groups()), 5) # 5 groups (dev, eval, world, optional_world_1, optional_world_2)
+
     self.assertEqual(len(db.client_ids()), 6) # 6 client ids for world, dev and eval
     self.assertEqual(len(db.client_ids(groups='world')), 2) # 2 client ids for world
     self.assertEqual(len(db.client_ids(groups='optional_world_1')), 2) # 2 client ids for optional world 1
@@ -75,6 +77,8 @@ class VerificationFilelistTest(unittest.TestCase):
     example_data = resource_filename(__name__, '.')
     db = Database(os.path.join(example_data), use_dense_probe_file_list = False)
     p = 'example_fl'
+
+    self.assertEqual(len(db.groups(protocol=p)), 5) # 5 groups (dev, eval, world, optional_world_1, optional_world_2)
 
     self.assertEqual(len(db.client_ids(protocol=p)), 6) # 6 client ids for world, dev and eval
     self.assertEqual(len(db.client_ids(groups='world', protocol=p)), 2) # 2 client ids for world

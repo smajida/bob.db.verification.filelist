@@ -137,7 +137,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     elif use_dense_probe_file_list is not None:
       self.m_use_dense_probes = use_dense_probe_file_list
     # Then direct path to a given protocol
-    elif os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)) or os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)) or os.path.isfile(os.path.join(self.get_base_directory(), self.m_world_filename)):
+    elif os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)) or os.path.isfile(os.path.join(self.get_base_directory(), self.m_world_filename)):
       if os.path.exists(self.get_list_file('dev', 'for_probes')) and not os.path.exists(self.get_list_file('dev', 'for_scores')):
         self.m_use_dense_probes = True
       elif not os.path.exists(self.get_list_file('dev', 'for_probes')) and os.path.exists(self.get_list_file('dev', 'for_scores')):
@@ -165,6 +165,41 @@ class Database(xbob.db.verification.utils.ZTDatabase):
         raise ValueError("Unable to determine, which way of probing should be used, since this is not consistent accross protocols. Please specify.")
 
     self.m_list_reader = ListReader(keep_read_lists_in_memory)
+
+
+  def groups(self, protocol=None):
+    """This function returns the list of groups for this database.
+
+    protocol
+      The protocol for which the groups should be retrieved.
+
+    Returns: a list of groups
+    """
+
+    groups = []
+    if protocol:
+      if os.path.isdir(os.path.join(self.get_base_directory(), protocol, self.m_dev_subdir)):
+        groups.append('dev')
+      if os.path.isdir(os.path.join(self.get_base_directory(), protocol, self.m_eval_subdir)):
+        groups.append('eval')
+      if os.path.isfile(os.path.join(self.get_base_directory(), protocol, self.m_world_filename)):
+        groups.append('world')
+      if os.path.isfile(os.path.join(self.get_base_directory(),protocol, self.m_optional_world_1_filename)):
+        groups.append('train_optional_world_1.lst')
+      if os.path.isfile(os.path.join(self.get_base_directory(), protocol, self.m_optional_world_2_filename)):
+        groups.append('train_optional_world_2.lst')
+    else:
+      if os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)):
+        groups.append('dev')
+      if os.path.isdir(os.path.join(self.get_base_directory(), self.m_eval_subdir)):
+        groups.append('eval')
+      if os.path.isfile(os.path.join(self.get_base_directory(), self.m_world_filename)):
+        groups.append('world')
+      if os.path.isfile(os.path.join(self.get_base_directory(), self.m_optional_world_1_filename)):
+        groups.append('train_optional_world_1.lst')
+      if os.path.isfile(os.path.join(self.get_base_directory(), self.m_optional_world_2_filename)):
+        groups.append('train_optional_world_2.lst')
+    return groups
 
   def get_base_directory(self):
     """Returns the base directory where the filelists defining the database
