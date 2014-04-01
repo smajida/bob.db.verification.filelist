@@ -48,7 +48,7 @@ script)::
       "xbob.db.verification.filelist",
     ],
 
-Proceed normally with your ``boostrap/buildout`` steps and you should be all
+Proceed normally with your ``bootstrap/buildout`` steps and you should be all
 set. That means you can now import the namespace ``xbob.db.verification.filelist`` into your scripts.
 
 Modify your buildout.cfg and download from git
@@ -92,29 +92,31 @@ The initial step for using this package is to provide file lists specifying the 
 
 - **For scoring**:
 
-1. two *probe files* for the development and evaluation set, with default name ``for_probes.lst`` and default subdirectories ``dev`` and ``eval`` respectively. These files need to be provided only if the scoring is to be done exhaustively, meaning by creating a dense probe/model scoring matrix. They are 2-column files with format:: 
+1.a. two *probe files* for the development and evaluation set, with default name ``for_probes.lst`` and default subdirectories ``dev`` and ``eval`` respectively. These files need to be provided only if the scoring is to be done exhaustively, meaning by creating a dense probe/model scoring matrix. They are 2-column files with format:: 
   
     filename client_id
 
-2. two *score files* for the development and evaluation set, with default name ``for_scores.lst`` and default subdirectories ``dev`` and ``eval`` respectively.  These files need to be provided only if the scoring is to be done selectively, meaning by creating a sparse probe/model scoring matrix. They are 4-column files with format:: 
+1.b. two *score files* for the development and evaluation set, with default name ``for_scores.lst`` and default subdirectories ``dev`` and ``eval`` respectively.  These files need to be provided only if the scoring is to be done selectively, meaning by creating a sparse probe/model scoring matrix. They are 4-column files with format:: 
 
     filename model_id claimed_client_id client_id
 
-3. two (optional) *files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
+2. two (optional) *files for t-score normalization* for the development and evaluation set, with default name ``for_tnorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 3-column files with format::
   
     filename model_id client_id
 
-4. two (optional) *files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
+3. two (optional) *files for z-score normalization* for the development and evaluation set, with default name ``for_znorm.lst`` and default subdirectories ``dev`` and ``eval`` respectively. They are 2-column files with format:: 
 
     filename client_id
 
-Note that the verification algorithm will use either only the probe or only the score files, so only one of them is mandatory. In case both probe and score files are provided, the algorithm will use the parameter ``use_dense_probe_file_list`` when creating the object of the ``Database`` class.
+.. note:: The verification queries will use either only the probe or only the score files, so only one of them is mandatory.
+          In case both probe and score files are provided, the user should set the parameter ``use_dense_probe_file_list``, which specifies the files to consider, when creating the object of the ``Database`` class.
 
-Also, note that if the database does not provide evaluation set, the scoring files can be ommited.
+.. note:: If the database does not provide an evaluation set, the scoring files can be ommited.
+          Similarly, if the user only define **for scoring** files and omit the remaining ones, the only valid queries will be scoring-related ones.
 
 The summarized structure of the base directory (here denoted as ``basedir``) containing all the files should be like this::
 
-  basedir -- norm -- train_world.rst
+  basedir -- norm -- train_world.lst
          |       |-- train_optional_world_1.lst
          |       |-- train_optional_world_2.lst
          |
@@ -138,7 +140,7 @@ When you instantiate a database, you have to specify the base directory that con
 If you have only a single protocol, you could specify the full path to the file lists described
 above as follows::
 
-  >>> db = xbob.db.verification.filelist('basedir/protocol')
+  >>> db = xbob.db.verification.filelist.Database('basedir/protocol')
 
 Next, you should query the data, WITHOUT specifying any protocol::
   
@@ -146,7 +148,7 @@ Next, you should query the data, WITHOUT specifying any protocol::
 
 Alternatively, if you have more protocols, you could do the following::
 
-  >>> db = xbob.db.verification.filelist('basedir')
+  >>> db = xbob.db.verification.filelist.Database('basedir')
   >>> db.objects(protocol='protocol')
 
 When a protocol is specified, it is appended to the base directory that contains the file lists.
@@ -154,7 +156,7 @@ This allows to use several protocols that are stored in the same base directory,
 to instantiate a new database. For instance, given two protocols 'P1' and 'P2' (with filelists
 contained in 'basedir/P1' and 'basedir/P2', respectively), the following would work::
 
-  >> db = xbob.db.verification.filelist('basedir')
+  >> db = xbob.db.verification.filelist.Database('basedir')
   >> db.objects(protocol='P1') # Get the objects for the protocol P1
   >> db.objects(protocol='P2') # Get the objects for the protocol P2
 
