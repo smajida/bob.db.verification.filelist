@@ -185,9 +185,9 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       if os.path.isfile(os.path.join(self.get_base_directory(), protocol, self.m_world_filename)):
         groups.append('world')
       if os.path.isfile(os.path.join(self.get_base_directory(),protocol, self.m_optional_world_1_filename)):
-        groups.append('train_optional_world_1.lst')
+        groups.append('optional_world_1')
       if os.path.isfile(os.path.join(self.get_base_directory(), protocol, self.m_optional_world_2_filename)):
-        groups.append('train_optional_world_2.lst')
+        groups.append('optional_world_2')
     else:
       if os.path.isdir(os.path.join(self.get_base_directory(), self.m_dev_subdir)):
         groups.append('dev')
@@ -196,9 +196,9 @@ class Database(xbob.db.verification.utils.ZTDatabase):
       if os.path.isfile(os.path.join(self.get_base_directory(), self.m_world_filename)):
         groups.append('world')
       if os.path.isfile(os.path.join(self.get_base_directory(), self.m_optional_world_1_filename)):
-        groups.append('train_optional_world_1.lst')
+        groups.append('optional_world_1')
       if os.path.isfile(os.path.join(self.get_base_directory(), self.m_optional_world_2_filename)):
-        groups.append('train_optional_world_2.lst')
+        groups.append('optional_world_2')
     return groups
 
   def get_base_directory(self):
