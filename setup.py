@@ -62,7 +62,7 @@ setup(
 
       # declare tests to bob
       'bob.test': [
-        'verification.filelist = bob.db.verification.filelist.test:VerificationFilelistTest',
+        'verification.filelist = bob.db.verification.filelist.test',
       ],
 
     },

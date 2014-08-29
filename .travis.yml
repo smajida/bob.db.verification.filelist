@@ -4,8 +4,8 @@ matrix:
   - python: 2.6
   - python: 2.7
     env:
-    - secure: IsIuB+1cKlkdqXxNmAGp/me3JrYcuTzrZVcP2x9XWsJR43AW7jlPet9fB1lsU6pzfymCww3eody+J4ZiTcKWjL91BLHLNbBcny6EdzwZzdt26sH7moF53WEe678bwcmrkBEDbbaTODPKJDKFNHWy2QjBd46KzFBsvUBMzPL8skA=
-    - secure: RyfuwYiUnkICmUMqV/oV1X0rckwa3FHxwt2zCf/uDPzQitccXf64byZp+yh6Va1epIc4pLXZ4nI2UBg2P222Q7xjOciXJShQZAXANeajhIfoLdC/mM/TvwJLOqviFrSh2fJlnuj1/Rwya3yhW0fkDlwJjyoc7vrJthIy1wgRExo=
+    - secure: XnteGmVwZmZGBafEq1I35HeiYlnuaTgIzQuPuitY+BsCfOsbZzJxhJep95uLlsmAMDNhsJnMrRq7IZK75OLeK4ZDhFTQ0clXQwpUZKrGazsi9uXH8zH8ts4P952CPZ8SEpFyl6Cz6zMsem/AykCBZEMzsc/4rwjyejP3If/Fg5U=
+    - secure: ZOyLb9iTrhUfheUnJF+hUkJlB4cf25sa88BBKVvti7XTZNk7HcOKc9eaX9DYJaLLrQI04sgMslA3uZUqcIHZgI9S8ChEcZPiU3L0zDkQZXh9YrpPFomED5Xh3kx2l1hoU5aN9fHpNllSk0iVYyyHh1uw7VWR+Lqq0duRnuPN3Q0=
   - python: 3.2
     env:
     - NUMPYSPEC===1.8.0
