@@ -24,14 +24,14 @@ from setuptools import setup, find_packages
 # parameters that define our package.
 setup(
 
-    name='xbob.db.verification.filelist',
-    version='1.3.6a0',
+    name='bob.db.verification.filelist',
+    version='2.0.0a0',
     description='Verification File List Database Access API for Bob',
-    url='https://pypi.python.org/pypi/xbob.db.verification.filelist',
+    url='https://pypi.python.org/pypi/bob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
-    keywords='bob, xbob, xbob.db, recognition, file lists',
+    keywords='bob, bob.db, recognition, file lists',
     long_description=open('README.rst').read(),
 
     # This line is required for any distutils based packaging.
@@ -41,33 +41,34 @@ setup(
 
     install_requires=[
       'setuptools',
-      'six',  # python2/3 compatibility package
-      'bob',  # base signal proc./machine learning library
-      'xbob.db.verification.utils' # defines a set of utilities for face verification databases like this one.
+      'bob.core',
+      'bob.io.base',
+      'bob.db.base',
+      'bob.db.verification.utils' # defines a set of utilities for face verification databases like this one.
     ],
 
     namespace_packages = [
-      'xbob',
-      'xbob.db',
-      'xbob.db.verification'
-      ],
+      'bob',
+      'bob.db',
+      'bob.db.verification'
+    ],
 
     entry_points={
 
       # declare database to bob
       'bob.db': [
-        'verification.filelist = xbob.db.verification.filelist.driver:Interface',
-        ],
+        'verification.filelist = bob.db.verification.filelist.driver:Interface',
+      ],
 
       # declare tests to bob
       'bob.test': [
-        'verification.filelist = xbob.db.verification.filelist.test:VerificationFilelistTest',
-        ],
+        'verification.filelist = bob.db.verification.filelist.test:VerificationFilelistTest',
+      ],
 
-      },
+    },
 
     classifiers = [
-      'Development Status :: 5 - Production/Stable',
+      'Development Status :: 4 - Beta',
       'Environment :: Console',
       'Intended Audience :: Developers',
       'Intended Audience :: Education',
@@ -78,5 +79,5 @@ setup(
       'Programming Language :: Python :: 3',
       'Topic :: Scientific/Engineering :: Artificial Intelligence',
       'Topic :: Database :: Front-Ends',
-      ],
+    ],
 )

@@ -26,18 +26,18 @@ import six
 
 from .models import Client, File, ListReader
 
-import xbob.db.verification.utils
+import bob.db.verification.utils
 
-class Database(xbob.db.verification.utils.ZTDatabase):
+class Database(bob.db.verification.utils.ZTDatabase):
   """This class provides a user-friendly interface to databases that are given as file lists.
-  The API is comparable to other xbob.db databases.
+  The API is comparable to other bob.db databases.
 
   Keyword parameters:
 
   base_dir
     The directory that contains the filelists defining the protocol(s). If you use the protocol
     attribute when querying the database, it will be appended to the base directory, such that
-    several protocols are supported by the same class instance of xbob.db.verification.filelist.
+    several protocols are supported by the same class instance of bob.db.verification.filelist.
 
   dev_subdir
     Specify a custom subdirectory for the filelists of the development set (default is 'dev')
@@ -49,11 +49,11 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     Specify a custom filename for the training filelist (default is 'norm/train_world.lst')
 
   optional_world_1_filename
-    Specify a custom filename for the (first optional) training filelist 
+    Specify a custom filename for the (first optional) training filelist
     (default is 'norm/train_optional_world_1.lst')
 
   optional_world_2_filename
-    Specify a custom filename for the (second optional) training filelist 
+    Specify a custom filename for the (second optional) training filelist
     (default is 'norm/train_optional_world_2.lst')
 
   models_filename
@@ -102,7 +102,7 @@ class Database(xbob.db.verification.utils.ZTDatabase):
     and the given sub-directories and file names (which default to useful values if not given)."""
 
     # call base class constrcutor
-    xbob.db.verification.utils.ZTDatabase.__init__(self)
+    bob.db.verification.utils.ZTDatabase.__init__(self)
 
     self.m_base_dir = os.path.abspath(base_dir)
     if not os.path.isdir(self.m_base_dir):

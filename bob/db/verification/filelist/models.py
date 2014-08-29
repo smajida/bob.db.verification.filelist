@@ -19,15 +19,14 @@
 
 """
 This file defines simple Client and File interfaces that should be comparable
-with other xbob.db databases.
+with other bob.db databases.
 """
 
 import os
-import bob
 import fileinput
 import re
 
-import xbob.db.verification.utils
+import bob.db.verification.utils
 
 class Client:
   """The clients of this database contain ONLY client ids. Nothing special."""
@@ -35,12 +34,12 @@ class Client:
     self.id = client_id
 
 
-class File (xbob.db.verification.utils.File):
+class File (bob.db.verification.utils.File):
   """Files of this database are composed from the client id, a file id, (a model id) and a claimed (client) id."""
   def __init__(self, file_name, client_id, model_id = None, claimed_id = None):
     # call base class constructor
     # the file id is the full file name
-    xbob.db.verification.utils.File.__init__(self, file_id = file_name, path = file_name, client_id = client_id)
+    bob.db.verification.utils.File.__init__(self, file_id = file_name, path = file_name, client_id = client_id)
 
     # Note: in case of probe files, model ids are considered to be the ids of the model for the given probe file.
     # Hence, there might be several probe files with the same file id, but different model ids.
@@ -134,7 +133,7 @@ class ListReader:
         return list
       # just return the previously read list
       return self.m_read_lists[group]
-    
+
     else:
       if group not in self.m_read_lists:
         self.m_read_lists[group] = {}
