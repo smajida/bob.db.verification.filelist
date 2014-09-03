@@ -39,11 +39,28 @@ class Database(bob.db.verification.utils.ZTDatabase):
     attribute when querying the database, it will be appended to the base directory, such that
     several protocols are supported by the same class instance of bob.db.verification.filelist.
 
+  original_directory
+    The directory, where the original data can be found
+
+  original_extension
+    The filename extension of the original data
+
+  annotation_directory
+    The directory, where additional annotation files can be found
+
+  annotation_extension
+    The filename extension of the annoation files
+
+  annotation_type
+    The type of annotation that can be read.
+    Currently, options are 'eyecenter', 'named', 'idiap'.
+    See :py:func:`bob.db.verification.utils.read_annotation_file` for details.
+
   dev_subdir
     Specify a custom subdirectory for the filelists of the development set (default is 'dev')
 
   eval_subdir
-    Specify a custom subdirectory for the filelists of the development set (default is 'dev')
+    Specify a custom subdirectory for the filelists of the development set (default is 'eval')
 
   world_filename
     Specify a custom filename for the training filelist (default is 'norm/train_world.lst')
@@ -81,6 +98,13 @@ class Database(bob.db.verification.utils.ZTDatabase):
   def __init__(
       self,
       base_dir,
+
+      original_directory = None,
+      original_extension = None,
+      annotation_directory = None,
+      annotation_extension = '.pos',
+      annotation_type = 'eyecenter',
+
       dev_subdir = None,
       eval_subdir = None,
 
@@ -102,7 +126,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
     and the given sub-directories and file names (which default to useful values if not given)."""
 
     # call base class constrcutor
-    bob.db.verification.utils.ZTDatabase.__init__(self)
+    bob.db.verification.utils.ZTDatabase.__init__(self, original_directory = original_directory, original_extension = original_extension)
+    self.m_annotation_directory = annotation_directory
+    self.m_annotation_extension = annotation_extension
+    self.m_annotation_type = annotation_type
 
     self.m_base_dir = os.path.abspath(base_dir)
     if not os.path.isdir(self.m_base_dir):
@@ -618,3 +645,28 @@ class Database(bob.db.verification.utils.ZTDatabase):
       retval.extend([file for file in self.m_list_reader.read_list(self.get_list_file(group, 'for_znorm', protocol), group, 'for_znorm')])
 
     return retval
+
+
+  def annotations(self, file_id):
+    """Reads the annotations for the given file id from file and returns them in a dictionary.
+
+    If you don't have a copy of the annotation files, you can download them under http://www.idiap.ch/resource/biometric.
+
+    Keyword parameters:
+
+    file_id
+      The ID of the file for which the annotations should be read.
+
+    Return value
+      The annotations as a dictionary: {'reye':(re_y,re_x), 'leye':(le_y,le_x)}
+    """
+    if self.m_annotation_directory is None:
+      return None
+
+    # since the file id is equal to the file name, we can simply use it
+    annotation_file = os.path.join(self.m_annotation_directory, file_id + self.m_annotation_extension)
+
+    # return the annotations as read from file
+    return bob.db.verification.utils.read_annotation_file(annotation_file, self.m_annotation_type)
+
+

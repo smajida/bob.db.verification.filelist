@@ -21,12 +21,12 @@
 
 import os, sys
 import bob.io.base.test_utils
-from .query import Database
+import bob.db.verification.filelist
 
 example_dir = os.path.realpath(bob.io.base.test_utils.datafile('.', __name__, 'example_fl'))
 
 def test_query():
-  db = Database(example_dir, use_dense_probe_file_list = False)
+  db = bob.db.verification.filelist.Database(example_dir, use_dense_probe_file_list = False)
 
   assert len(db.groups()) == 5 # 5 groups (dev, eval, world, optional_world_1, optional_world_2)
 
@@ -69,8 +69,8 @@ def test_query():
   assert db.get_client_id_from_tmodel_id('7') == '7'
 
 
-def test02_query_protocol():
-  db = Database(os.path.dirname(example_dir), use_dense_probe_file_list = False)
+def test_query_protocol():
+  db = bob.db.verification.filelist.Database(os.path.dirname(example_dir), use_dense_probe_file_list = False)
   p = 'example_fl'
 
   assert len(db.groups(protocol=p)) == 5 # 5 groups (dev, eval, world, optional_world_1, optional_world_2)
@@ -115,12 +115,23 @@ def test02_query_protocol():
 
 
 def test_query_dense():
-  db = Database(example_dir, probes_filename = 'for_probes.lst')
+  db = bob.db.verification.filelist.Database(example_dir, probes_filename = 'for_probes.lst')
 
   assert len(db.objects(groups='world')) == 8 # 8 samples in the world set
 
   assert len(db.objects(groups='dev', purposes='enrol')) == 8 # 8 samples for enrollment in the dev set
   assert len(db.objects(groups='dev', purposes='probe')) == 8 # 8 samples as probes in the dev set
+
+
+def test_annotation():
+  db = bob.db.verification.filelist.Database(example_dir, use_dense_probe_file_list = False, annotation_directory = example_dir, annotation_type = 'named')
+  annots = db.annotations("data/model4_session1_sample2")
+
+  assert annots is not None
+  assert 'key1' in annots
+  assert 'key2' in annots
+  assert annots['key1'] == (20,10)
+  assert annots['key2'] == (40,30)
 
 
 def test_driver_api():
