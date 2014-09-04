@@ -2,16 +2,16 @@
 .. Manuel Guenther <manuel.guenther@idiap.ch>
 .. Thu Sep  4 11:35:05 CEST 2014
 
-.. image:: https://travis-ci.org/bioidiap/bob.learn.misc.svg?branch=master
-   :target: https://travis-ci.org/bioidiap/bob.learn.misc
-.. image:: https://coveralls.io/repos/bioidiap/bob.learn.misc/badge.png
-   :target: https://coveralls.io/r/bioidiap/bob.learn.misc
-.. image:: http://img.shields.io/github/tag/bioidiap/bob.learn.misc.png
-   :target: https://github.com/bioidiap/bob.learn.misc
-.. image:: http://img.shields.io/pypi/v/bob.learn.misc.png
-   :target: https://pypi.python.org/pypi/bob.learn.misc
-.. image:: http://img.shields.io/pypi/dm/bob.learn.misc.png
-   :target: https://pypi.python.org/pypi/bob.learn.misc
+.. image:: https://travis-ci.org/bioidiap/bob.db.verification.filelist.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.db.verification.filelist
+.. image:: https://coveralls.io/repos/bioidiap/bob.db.verification.filelist/badge.png
+   :target: https://coveralls.io/r/bioidiap/bob.db.verification.filelist
+.. image:: http://img.shields.io/github/tag/bioidiap/bob.db.verification.filelist.png
+   :target: https://github.com/bioidiap/bob.db.verification.filelist
+.. image:: http://img.shields.io/pypi/v/bob.db.verification.filelist.png
+   :target: https://pypi.python.org/pypi/bob.db.verification.filelist
+.. image:: http://img.shields.io/pypi/dm/bob.db.verification.filelist.png
+   :target: https://pypi.python.org/pypi/bob.db.verification.filelist
 
 ======================================
  Verification File Lists Database API
