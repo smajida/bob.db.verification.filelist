@@ -1,3 +1,18 @@
+.. vim: set fileencoding=utf-8 :
+.. Manuel Guenther <manuel.guenther@idiap.ch>
+.. Thu Sep  4 11:35:05 CEST 2014
+
+.. image:: https://travis-ci.org/bioidiap/bob.learn.misc.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.learn.misc
+.. image:: https://coveralls.io/repos/bioidiap/bob.learn.misc/badge.png
+   :target: https://coveralls.io/r/bioidiap/bob.learn.misc
+.. image:: http://img.shields.io/github/tag/bioidiap/bob.learn.misc.png
+   :target: https://github.com/bioidiap/bob.learn.misc
+.. image:: http://img.shields.io/pypi/v/bob.learn.misc.png
+   :target: https://pypi.python.org/pypi/bob.learn.misc
+.. image:: http://img.shields.io/pypi/dm/bob.learn.misc.png
+   :target: https://pypi.python.org/pypi/bob.learn.misc
+
 ======================================
  Verification File Lists Database API
 ======================================
@@ -63,8 +78,7 @@ lines::
   ...
   extensions = mr.developer
   auto-checkout = *
-  eggs = bob
-         ...
+  eggs = ...
          bob.db.verification.filelist
 
   [sources]
