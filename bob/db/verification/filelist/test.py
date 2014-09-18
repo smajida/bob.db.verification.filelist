@@ -134,6 +134,28 @@ def test_annotation():
   assert annots['key2'] == (40,30)
 
 
+def test_multiple_extensions():
+  # check that the old behavior still works
+  db = bob.db.verification.filelist.Database(example_dir, use_dense_probe_file_list = False, original_directory = example_dir, original_extension = '.pos')
+  file = bob.db.verification.filelist.models.File("data/model4_session1_sample2", 4)
+  file_name = db.original_file_name(file, True)
+  assert file_name == os.path.join(example_dir, file.path + '.pos')
+
+  # check that the new behavior works as well
+  db = bob.db.verification.filelist.Database(example_dir, use_dense_probe_file_list = False, original_directory = example_dir, original_extension = ['.jpg', '.pos'])
+
+  file_name = db.original_file_name(file)
+  assert file_name == os.path.join(example_dir, file.path + '.pos')
+
+  file = bob.db.verification.filelist.models.File("data/model4_session1_sample1", 4)
+  try:
+    file_name = db.original_file_name(file, False)
+    raised = False
+  except IOError as e:
+    raised = True
+  assert raised
+
+
 def test_driver_api():
   from bob.db.base.script.dbmanage import main
   assert main(('verification.filelist dumplist --list-directory=%s --self-test' % example_dir).split()) == 0

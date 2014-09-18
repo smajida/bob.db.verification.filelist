@@ -42,8 +42,8 @@ class Database(bob.db.verification.utils.ZTDatabase):
   original_directory
     The directory, where the original data can be found
 
-  original_extension
-    The filename extension of the original data
+  original_extension : str or [str]
+    The filename extension of the original data, or multiple extensions
 
   annotation_directory
     The directory, where additional annotation files can be found
@@ -669,4 +669,38 @@ class Database(bob.db.verification.utils.ZTDatabase):
     # return the annotations as read from file
     return bob.db.verification.utils.read_annotation_file(annotation_file, self.m_annotation_type)
 
+
+  def original_file_name(self, file, check_existence = True):
+    """Returns the original file name of the given file.
+
+    This interface supports several original extensions, so that file lists can contain images of different data types.
+    When a single original extension is specified, the base class function :py:func:`bob.db.verification.utils.original_file_name` will be called.
+
+    When multiple original extensions are specified, this function will check the existence of any of these file names, and return the first one that actually exists.
+    In this case, the ``check_existence`` flag is ignored.
+
+    **Keyword parameters**
+
+    file : :py:class:`bob.db.verification.filelist.File`
+      The File object for which the file name should be returned.
+
+    check_existence : bool
+      Should the existence of the original file be checked?
+      (Ignored when multiple original extensions were specified in the contructor.)
+
+    **Returns**
+    str : The full path of the original data file.
+    """
+
+    if isinstance(self.original_extension, str):
+      return bob.db.verification.utils.Database.original_file_name(self, file, check_existence)
+
+    # check all registered extensions
+    for extension in self.original_extension:
+      file_name = file.make_path(self.original_directory, extension)
+      if os.path.exists(file_name):
+        return file_name
+
+    # None of the extensions matched
+    raise IOError("File '%s' does not exist with any of the extensions '%s'" % (file.make_path(self.original_directory, None), self.original_extension))
 
