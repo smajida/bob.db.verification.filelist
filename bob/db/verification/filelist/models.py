@@ -73,14 +73,14 @@ class ListReader:
         if len(parsed_line):
           # perform some sanity checks
           if len(parsed_line) not in (2,3,4):
-            raise IOError("The read line '%s' from file '%s' could not be parsed successfully!" (line, list_file))
+            raise IOError("The read line '%s' from file '%s' could not be parsed successfully!" % (line.rstrip(), list_file))
           if len(rows) and len(rows[0]) != len(parsed_line):
-            raise IOError("The parsed line '%s' from file '%s' has a different number of elements than the first parsed line '%s'!" (parsed_line, list_file, rows[0]))
+            raise IOError("The parsed line '%s' from file '%s' has a different number of elements than the first parsed line '%s'!" % (parsed_line, list_file, rows[0]))
           # append the read line
           rows.append(parsed_line)
       fileinput.close()
     except IOError as e:
-      raise RuntimeError('Error reading the file %s.' % (list_file,))
+      raise RuntimeError("Error reading the file '%s' : '%s'." % (list_file, e))
 
     # return the read list as a vector of columns
     return rows
