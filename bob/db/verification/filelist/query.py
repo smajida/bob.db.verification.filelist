@@ -205,7 +205,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
     """
 
     groups = []
-    if protocol:
+    if protocol is not None:
       if os.path.isdir(os.path.join(self.get_base_directory(), protocol, self.m_dev_subdir)):
         groups.append('dev')
       if os.path.isdir(os.path.join(self.get_base_directory(), protocol, self.m_eval_subdir)):
@@ -228,6 +228,30 @@ class Database(bob.db.verification.utils.ZTDatabase):
       if os.path.isfile(os.path.join(self.get_base_directory(), self.m_optional_world_2_filename)):
         groups.append('optional_world_2')
     return groups
+
+
+  def implements_zt(self, protocol=None, groups=None):
+    """Checks if the file lists for the ZT score normalization are available.
+
+    Keyword Parameters:
+
+    protocol : str or ``None``
+      The protocol for which the groups should be retrieved.
+
+    groups : str or [str] or ``None``
+      The groups for which the ZT score normalization file lists should be checked ("dev", "eval").
+
+    Returns:
+      ``True`` if the all file lists for ZT score normalization exist, otherwise ``False``.
+    """
+    groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
+
+    for group in groups:
+      for t in ['for_tnorm', 'for_znorm']:
+        if not os.path.exists(self.get_list_file(group, t, protocol)):
+          return False
+    # all files exist
+    return True
 
   def get_base_directory(self):
     """Returns the base directory where the filelists defining the database
