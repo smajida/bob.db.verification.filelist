@@ -51,9 +51,9 @@ def test_query():
 
   assert len(db.objects(groups='world')) == 8 # 8 samples in the world set
 
-  assert len(db.objects(groups='dev', purposes='enrol')) == 8 # 8 samples for enrollment in the dev set
-  assert len(db.objects(groups='dev', purposes='enrol', model_ids='3')) == 4 # 4 samples for to enroll model '3' in the dev set
-  assert len(db.objects(groups='dev', purposes='enrol', model_ids='7')) == 0 # 0 samples for enrolling model '7' (it is a T-Norm model)
+  assert len(db.objects(groups='dev', purposes='enroll')) == 8 # 8 samples for enrollment in the dev set
+  assert len(db.objects(groups='dev', purposes='enroll', model_ids='3')) == 4 # 4 samples for to enroll model '3' in the dev set
+  assert len(db.objects(groups='dev', purposes='enroll', model_ids='7')) == 0 # 0 samples for enrolling model '7' (it is a T-Norm model)
   assert len(db.objects(groups='dev', purposes='probe')) == 8 # 8 samples as probes in the dev set
   assert len(db.objects(groups='dev', purposes='probe', classes='client')) == 8 # 8 samples as client probes in the dev set
   assert len(db.objects(groups='dev', purposes='probe', classes='impostor')) == 4 # 4 samples as impostor probes in the dev set
@@ -96,9 +96,9 @@ def test_query_protocol():
 
   assert len(db.objects(groups='world', protocol=p)) == 8 # 8 samples in the world set
 
-  assert len(db.objects(groups='dev', purposes='enrol', protocol=p)) == 8 # 8 samples for enrollment in the dev set
-  assert len(db.objects(groups='dev', purposes='enrol', model_ids='3', protocol=p)) == 4 # 4 samples for to enroll model '3' in the dev set
-  assert len(db.objects(groups='dev', purposes='enrol', model_ids='7', protocol=p)) == 0 # 0 samples for enrolling model '7' (it is a T-Norm model)
+  assert len(db.objects(groups='dev', purposes='enroll', protocol=p)) == 8 # 8 samples for enrollment in the dev set
+  assert len(db.objects(groups='dev', purposes='enroll', model_ids='3', protocol=p)) == 4 # 4 samples for to enroll model '3' in the dev set
+  assert len(db.objects(groups='dev', purposes='enroll', model_ids='7', protocol=p)) == 0 # 0 samples for enrolling model '7' (it is a T-Norm model)
   assert len(db.objects(groups='dev', purposes='probe', protocol=p)) == 8 # 8 samples as probes in the dev set
   assert len(db.objects(groups='dev', purposes='probe', classes='client', protocol=p)) == 8 # 8 samples as client probes in the dev set
   assert len(db.objects(groups='dev', purposes='probe', classes='impostor', protocol=p)) == 4 # 4 samples as impostor probes in the dev set
@@ -119,13 +119,14 @@ def test_query_dense():
 
   assert len(db.objects(groups='world')) == 8 # 8 samples in the world set
 
-  assert len(db.objects(groups='dev', purposes='enrol')) == 8 # 8 samples for enrollment in the dev set
+  assert len(db.objects(groups='dev', purposes='enroll')) == 8 # 8 samples for enrollment in the dev set
   assert len(db.objects(groups='dev', purposes='probe')) == 8 # 8 samples as probes in the dev set
 
 
 def test_annotation():
   db = bob.db.verification.filelist.Database(example_dir, use_dense_probe_file_list = False, annotation_directory = example_dir, annotation_type = 'named')
-  annots = db.annotations("data/model4_session1_sample2")
+  f = [o for o in db.objects() if o.path == "data/model4_session1_sample2"][0]
+  annots = db.annotations(f)
 
   assert annots is not None
   assert 'key1' in annots
@@ -159,7 +160,7 @@ def test_multiple_extensions():
 def test_driver_api():
   from bob.db.base.script.dbmanage import main
   assert main(('verification.filelist dumplist --list-directory=%s --self-test' % example_dir).split()) == 0
-  assert main(('verification.filelist dumplist --list-directory=%s --purpose=enrol --group=dev --class=client --self-test' % example_dir).split()) == 0
+  assert main(('verification.filelist dumplist --list-directory=%s --purpose=enroll --group=dev --class=client --self-test' % example_dir).split()) == 0
   assert main(('verification.filelist checkfiles --list-directory=%s --self-test' % example_dir).split()) == 0
 
 

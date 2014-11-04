@@ -59,15 +59,10 @@ setup(
       'bob.db': [
         'verification.filelist = bob.db.verification.filelist.driver:Interface',
       ],
-
-      # declare tests to bob
-      'bob.test': [
-        'verification.filelist = bob.db.verification.filelist.test',
-      ],
-
     },
 
     classifiers = [
+      'Framework :: Bob',
       'Development Status :: 4 - Beta',
       'Environment :: Console',
       'Intended Audience :: Developers',

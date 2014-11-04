@@ -18,8 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-This file defines simple Client and File interfaces that should be comparable
-with other bob.db databases.
+This file defines simple Client and File interfaces that are comparable with other bob.db databases.
 """
 
 import os
@@ -32,10 +31,16 @@ class Client:
   """The clients of this database contain ONLY client ids. Nothing special."""
   def __init__(self, client_id):
     self.id = client_id
+    """The ID of the client, which is stored as a :py:class:`str` object."""
 
 
 class File (bob.db.verification.utils.File):
-  """Files of this database are composed from the client id, a file id, (a model id) and a claimed (client) id."""
+  """Files of this database are composed from the client id, a file id, (a model id) and a claimed (client) id.
+
+  Both the :py:attr:`bob.db.verification.utils.File.id` and the :py:attr:`bob.db.verification.utils.File.path` are set to the given ``file_name`` parameter.
+  If the ``model_id`` is not specified, ``model_id`` and ``client_id`` are identical.
+  If the ``claimed_id`` is not specified, it is expected to be the ``client_id``.
+  """
   def __init__(self, file_name, client_id, model_id = None, claimed_id = None):
     # call base class constructor
     # the file id is the full file name

@@ -22,6 +22,7 @@
 """
 
 from .query import Database
+from .models import Client, File
 
 def get_config():
   """Returns a string containing the configuration information.

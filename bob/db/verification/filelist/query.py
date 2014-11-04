@@ -30,68 +30,69 @@ import bob.db.verification.utils
 
 class Database(bob.db.verification.utils.ZTDatabase):
   """This class provides a user-friendly interface to databases that are given as file lists.
-  The API is comparable to other bob.db databases.
+  The API is comparable to other bob.db verification databases by implementing the :py:class:`bob.db.verification.utils.ZTDatabase` interface.
 
   Keyword parameters:
 
-  base_dir
+  base_dir : str
     The directory that contains the filelists defining the protocol(s). If you use the protocol
     attribute when querying the database, it will be appended to the base directory, such that
     several protocols are supported by the same class instance of bob.db.verification.filelist.
 
-  original_directory
+  original_directory : str or ``None``
     The directory, where the original data can be found
 
-  original_extension : str or [str]
+  original_extension : str or [str] or ``None``
     The filename extension of the original data, or multiple extensions
 
-  annotation_directory
+  annotation_directory : str or ``None``
     The directory, where additional annotation files can be found
 
-  annotation_extension
+  annotation_extension : str or ``None``
     The filename extension of the annoation files
 
-  annotation_type
+  annotation_type : str or ``None``
     The type of annotation that can be read.
     Currently, options are 'eyecenter', 'named', 'idiap'.
     See :py:func:`bob.db.verification.utils.read_annotation_file` for details.
 
-  dev_subdir
+  dev_subdir : str or ``None``
     Specify a custom subdirectory for the filelists of the development set (default is 'dev')
 
-  eval_subdir
+  eval_subdir : str or ``None``
     Specify a custom subdirectory for the filelists of the development set (default is 'eval')
 
-  world_filename
+  world_filename : str or ``None``
     Specify a custom filename for the training filelist (default is 'norm/train_world.lst')
 
-  optional_world_1_filename
+  optional_world_1_filename : str or ``None``
     Specify a custom filename for the (first optional) training filelist
     (default is 'norm/train_optional_world_1.lst')
 
-  optional_world_2_filename
+  optional_world_2_filename : str or ``None``
     Specify a custom filename for the (second optional) training filelist
     (default is 'norm/train_optional_world_2.lst')
 
-  models_filename
+  models_filename : str or ``None``
     Specify a custom filename for the model filelists (default is 'for_models.lst')
 
-  probes_filename
+  probes_filename : str or ``None``
     Specify a custom filename for the probes filelists (default is 'for_probes.lst')
 
-  scores_filename
+  scores_filename : str or ``None``
     Specify a custom filename for the scores filelists (default is 'for_scores.lst')
 
-  tnorm_filename
+  tnorm_filename : str or ``None``
     Specify a custom filename for the T-norm scores filelists (default is 'for_tnorm.lst')
 
-  znorm_filename
+  znorm_filename : str or ``None``
     Specify a custom filename for the Z-norm scores filelists (default is 'for_znorm.lst')
 
-  use_dense_probe_file_list
-    Specify which list to use among 'probes_filename' (dense) or 'scores_filename'
+  use_dense_probe_file_list : bool or None
+    Specify which list to use among 'probes_filename' (dense) or 'scores_filename'.
+    If ``None`` it is tried to be estimated based on the given parameters.
 
-  keep_read_lists_in_memory
+  keep_read_lists_in_memory : bool
     If set to true, the lists are read only once and stored in memory
   """
 
@@ -157,7 +158,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
     self.m_znorm_filename = znorm_filename if znorm_filename is not None else 'for_znorm.lst'
 
     # decide, which scoring type we have:
-    if   probes_filename is not None and scores_filename is None:
+    if probes_filename is not None and scores_filename is None:
       self.m_use_dense_probes = True
     elif probes_filename is None and scores_filename is not None:
       self.m_use_dense_probes = False
@@ -197,7 +198,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
   def groups(self, protocol=None):
     """This function returns the list of groups for this database.
 
-    protocol
+    protocol : str or ``None``
       The protocol for which the groups should be retrieved.
 
     Returns: a list of groups
@@ -267,15 +268,15 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword parameters:
 
-    model_id
+    model_id : str or ``None``
       The model id for which the client id should be returned.
 
-    groups
+    groups : str or [str] or ``None``
       (optional) the groups, the client belongs to.
       Might be one or more of ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2').
       If groups are given, only these groups are considered.
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
     Returns: The client id for the given model id, if found.
@@ -295,15 +296,15 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword parameters:
 
-    model_id
+    model_id : str or ``None``
       The model id for which the client id should be returned.
 
-    groups
+    groups : str or [str] or ``None``
       (optional) the groups, the client belongs to.
       Might be one or more of ('dev', 'eval').
       If groups are given, only these groups are considered.
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
     Returns: The client id for the given model id of a T-Norm model, if found.
@@ -319,34 +320,34 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
 
   def clients(self, protocol=None, groups=None):
-    """Returns a list of Client objects for the specific query by the user.
+    """Returns a list of :py:class:`Client` objects for the specific query by the user.
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
-    Returns: A list containing all the Client objects which have the given properties.
+    Returns: A list containing all the :py:class:`Client` objects which have the given properties.
     """
 
     client_ids = self.client_ids(protocol, groups)
     return [Client(id) for id in client_ids]
 
   def tclients(self, protocol=None, groups=None):
-    """Returns a list of T-Norm Client objects for the specific query by the user.
+    """Returns a list of T-Norm :py:class:`Client` objects for the specific query by the user.
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval").
 
-    Returns: A list containing all the T-Norm Client objects which have the given properties.
+    Returns: A list containing all the T-Norm :py:class:`Client` objects which have the given properties.
     """
     tclient_ids = self.tclient_ids(protocol, groups)
     return [Client(id) for id in tclient_ids]
@@ -357,10 +358,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the models belong ("dev", "eval").
 
     Returns: A list containing all the Z-Norm Client objects which have the given properties.
@@ -384,10 +385,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
     Returns: A list containing all the client ids which have the given properties.
@@ -403,10 +404,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval").
 
     Returns: A list containing all the T-Norm client ids which have the given properties.
@@ -422,10 +423,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval").
 
     Returns: A list containing all the Z-Norm client ids which have the given properties.
@@ -451,10 +452,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the models belong ("dev", "eval", "world", "optional_world_1", "optional_world_2").
 
     Returns: A list containing all the model ids which have the given properties.
@@ -470,10 +471,10 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the models belong ("dev", "eval").
 
     Returns: A list containing all the T-Norm model ids belonging to the given group.
@@ -485,42 +486,42 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
 
   def objects(self, protocol=None, purposes=None, model_ids=None, groups=None, classes=None):
-    """Returns a set of filenames for the specific query by the user.
+    """Returns a set of :py:class:`File` objects for the specific query by the user.
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    purposes
-      The purposes required to be retrieved ("enrol", "probe") or a tuple
+    purposes : str or [str] or ``None``
+      The purposes required to be retrieved ("enroll", "probe") or a tuple
       with several of them. If 'None' is given (this is the default), it is
       considered the same as a tuple with all possible values. This field is
       ignored for the data from the "world", "optional_world_1", "optional_world_2" groups.
 
-    model_ids
+    model_ids : str or [str] or ``None``
       Only retrieves the files for the provided list of model ids (claimed
       client id). If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
-    groups
+    groups : str or [str] or ``None``
       One of the groups ("dev", "eval", "world", "optional_world_1", "optional_world_2") or a tuple with several of them.
       If 'None' is given (this is the default), it is considered the same as a
       tuple with all possible values.
 
-    classes
+    classes : str or [str] or ``None``
       The classes (types of accesses) to be retrieved ('client', 'impostor')
       or a tuple with several of them. If 'None' is given (this is the
       default), it is considered the same as a tuple with all possible values.
       Note: classes are not allowed to be specified when the 'probes_filename' is used.
 
-    Returns: A list of File objects considering all the filtering criteria.
+    Returns: A list of :py:class:`File` objects considering all the filtering criteria.
     """
 
     if self.m_use_dense_probes and classes is not None:
       raise ValueError("To be able to use the 'classes' keyword, please use the 'for_scores.lst' list file.")
 
-    purposes = self.check_parameters_for_validity(purposes, "purpose", ('enrol', 'probe'))
+    purposes = self.check_parameters_for_validity(purposes, "purpose", ('enroll', 'probe'))
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2'), default_parameters=('dev', 'eval', 'world'))
     classes = self.check_parameters_for_validity(classes, "class", ('client', 'impostor'))
 
@@ -538,7 +539,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
     for group in ('dev', 'eval'):
       if group in groups:
-        if 'enrol' in purposes:
+        if 'enroll' in purposes:
           lists.append(self.m_list_reader.read_list(self.get_list_file(group, 'for_models', protocol=protocol), group, 'for_models'))
         if 'probe' in purposes:
           if self.m_use_dense_probes:
@@ -588,22 +589,22 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
 
   def tobjects(self, protocol=None, model_ids=None, groups=None):
-    """Returns a list of File objects for enrolling T-norm models for score normalization.
+    """Returns a list of :py:class:`File` objects for enrolling T-norm models for score normalization.
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    model_ids
+    model_ids : str or [str] or ``None``
       Only retrieves the files for the provided list of model ids (claimed
       client id). If 'None' is given (this is the default), no filter over
       the model_ids is performed.
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the models belong ("dev", "eval").
 
-    Returns: A list of File objects considering all the filtering criteria.
+    Returns: A list of :py:class:`File` objects considering all the filtering criteria.
     """
 
     groups = self.check_parameters_for_validity(groups, "group", ('dev', 'eval'))
@@ -623,14 +624,14 @@ class Database(bob.db.verification.utils.ZTDatabase):
 
 
   def zobjects(self, protocol=None, groups=None):
-    """Returns a list of File objects to perform Z-norm score normalization.
+    """Returns a list of :py:class:`File` objects to perform Z-norm score normalization.
 
     Keyword Parameters:
 
-    protocol
+    protocol : str or ``None``
       The protocol to consider
 
-    groups
+    groups : str or [str] or ``None``
       The groups to which the clients belong ("dev", "eval").
 
     Returns: A list of File objects considering all the filtering criteria.
@@ -647,15 +648,15 @@ class Database(bob.db.verification.utils.ZTDatabase):
     return retval
 
 
-  def annotations(self, file_id):
+  def annotations(self, file):
     """Reads the annotations for the given file id from file and returns them in a dictionary.
 
     If you don't have a copy of the annotation files, you can download them under http://www.idiap.ch/resource/biometric.
 
     Keyword parameters:
 
-    file_id
-      The ID of the file for which the annotations should be read.
+    file : :py:class:`bob.db.verification.filelist.File`
+      The :py:class:`File` object for which the annotations should be read.
 
     Return value
       The annotations as a dictionary: {'reye':(re_y,re_x), 'leye':(le_y,le_x)}
@@ -664,7 +665,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
       return None
 
     # since the file id is equal to the file name, we can simply use it
-    annotation_file = os.path.join(self.m_annotation_directory, file_id + self.m_annotation_extension)
+    annotation_file = os.path.join(self.m_annotation_directory, file.id + self.m_annotation_extension)
 
     # return the annotations as read from file
     return bob.db.verification.utils.read_annotation_file(annotation_file, self.m_annotation_type)
@@ -682,7 +683,7 @@ class Database(bob.db.verification.utils.ZTDatabase):
     **Keyword parameters**
 
     file : :py:class:`bob.db.verification.filelist.File`
-      The File object for which the file name should be returned.
+      The py:class:`File` object for which the file name should be returned.
 
     check_existence : bool
       Should the existence of the original file be checked?
