@@ -162,5 +162,3 @@ def test_driver_api():
   assert main(('verification.filelist dumplist --list-directory=%s --self-test' % example_dir).split()) == 0
   assert main(('verification.filelist dumplist --list-directory=%s --purpose=enroll --group=dev --class=client --self-test' % example_dir).split()) == 0
   assert main(('verification.filelist checkfiles --list-directory=%s --self-test' % example_dir).split()) == 0
-
-
