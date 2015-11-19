@@ -48,11 +48,7 @@ setup(
 
     install_requires=install_requires,
 
-    namespace_packages = [
-      'bob',
-      'bob.db',
-      'bob.db.verification'
-    ],
+
 
     entry_points={
 
