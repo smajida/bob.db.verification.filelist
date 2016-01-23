@@ -34,7 +34,7 @@ setup(
     name='bob.db.verification.filelist',
     version=version,
     description='Verification File List Database Access API for Bob',
-    url='https://pypi.python.org/pypi/bob.db.verification.filelist',
+    url='https://github.com/bioidiap/bob.db.verification.filelist',
     license='GPLv3',
     author='Laurent El Shafey',
     author_email='laurent.el-shafey@idiap.ch',
