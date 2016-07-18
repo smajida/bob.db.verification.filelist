@@ -24,100 +24,117 @@ import os
 import sys
 from bob.db.base.driver import Interface as BaseInterface
 
+
 def dumplist(args):
-  """Dumps lists of files based on your criteria"""
+    """Dumps lists of files based on your criteria"""
 
-  from .query import Database
-  db = Database(args.list_directory, use_dense_probe_file_list = False)
+    from .query import Database
+    db = Database(args.list_directory, use_dense_probe_file_list=False)
 
-  r = db.objects(
-      purposes=args.purpose,
-      groups=args.group,
-      classes=args.sclass,
-      protocol=args.protocol
-  )
+    r = db.objects(
+        purposes=args.purpose,
+        groups=args.group,
+        classes=args.sclass,
+        protocol=args.protocol
+    )
 
-  output = sys.stdout
-  if args.selftest:
-    from bob.db.base.utils import null
-    output = null()
+    output = sys.stdout
+    if args.selftest:
+        from bob.db.base.utils import null
+        output = null()
 
-  for f in r:
-    output.write('%s\n' % f.make_path(directory=args.directory,extension=args.extension))
+    for f in r:
+        output.write('%s\n' % f.make_path(directory=args.directory, extension=args.extension))
 
-  return 0
+    return 0
+
 
 def checkfiles(args):
-  """Checks existence of files based on your criteria"""
+    """Checks existence of files based on your criteria"""
 
-  from .query import Database
-  db = Database(args.list_directory, use_dense_probe_file_list = False)
+    from .query import Database
+    db = Database(args.list_directory, use_dense_probe_file_list=False)
 
-  r = db.objects(protocol=args.protocol)
+    r = db.objects(protocol=args.protocol)
 
-  # go through all files, check if they are available on the filesystem
-  good = []
-  bad = []
-  for f in r:
-    if os.path.exists(f.make_path(args.directory, args.extension)): good.append(f)
-    else: bad.append(f)
+    # go through all files, check if they are available on the filesystem
+    good = []
+    bad = []
+    for f in r:
+        if os.path.exists(f.make_path(args.directory, args.extension)):
+            good.append(f)
+        else:
+            bad.append(f)
 
-  # report
-  output = sys.stdout
-  if args.selftest:
-    from bob.db.base.utils import null
-    output = null()
+    # report
+    output = sys.stdout
+    if args.selftest:
+        from bob.db.base.utils import null
+        output = null()
 
-  if bad:
-    for f in bad:
-      output.write('Cannot find file "%s"\n' % f.make_path(args.directory, args.extension))
-    output.write('%d files (out of %d) were not found at "%s"\n' % \
-        (len(bad), len(r), args.directory))
+    if bad:
+        for f in bad:
+            output.write('Cannot find file "%s"\n' % f.make_path(args.directory, args.extension))
+        output.write('%d files (out of %d) were not found at "%s"\n' % \
+                     (len(bad), len(r), args.directory))
 
-  return 0
+    return 0
+
 
 class Interface(BaseInterface):
+    def name(self):
+        return 'verification.filelist'
 
-  def name(self):
-    return 'verification.filelist'
+    def version(self):
+        import pkg_resources  # part of setuptools
+        return pkg_resources.require('bob.db.%s' % self.name())[0].version
 
-  def version(self):
-    import pkg_resources  # part of setuptools
-    return pkg_resources.require('bob.db.%s' % self.name())[0].version
+    def files(self):
+        return ()
 
-  def files(self):
-    return ()
+    def type(self):
+        return 'text'
 
-  def type(self):
-    return 'text'
+    def add_commands(self, parser):
+        from . import __doc__ as docs
 
-  def add_commands(self, parser):
+        subparsers = self.setup_parser(parser,
+                                       "Face Verification File Lists database", docs)
 
-    from . import __doc__ as docs
+        import argparse
 
-    subparsers = self.setup_parser(parser,
-        "Face Verification File Lists database", docs)
+        # the "dumplist" action
+        parser = subparsers.add_parser('dumplist', help=dumplist.__doc__)
+        parser.add_argument('-l', '--list-directory', required=True,
+                            help="The directory which contains the file lists.")
+        parser.add_argument('-d', '--directory', default='',
+                            help="if given, this path will be prepended to every entry returned.")
+        parser.add_argument('-e', '--extension', default='',
+                            help="if given, this extension will be appended to every entry returned.")
+        parser.add_argument('-u', '--purpose',
+                            help="if given, this value will limit the output files to those designed for the given purposes.",
+                            choices=('enroll', 'probe', ''))
+        parser.add_argument('-g', '--group',
+                            help="if given, this value will limit the output files to those belonging to a particular protocolar group.",
+                            choices=('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2', ''))
+        parser.add_argument('-c', '--class', dest="sclass",
+                            help="if given, this value will limit the output files to those belonging to the given classes.",
+                            choices=('client', 'impostor', ''))
+        parser.add_argument('-p', '--protocol', default=None,
+                            help="If set, the protocol is appended to the directory that contains the file lists.")
+        parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
+        parser.set_defaults(func=dumplist)  # action
 
-    import argparse
+        # the "checkfiles" action
+        parser = subparsers.add_parser('checkfiles', help=checkfiles.__doc__)
+        parser.add_argument('-l', '--list-directory', required=True,
+                            help="The directory which contains the file lists.")
+        parser.add_argument('-d', '--directory', dest="directory", default='',
+                            help="if given, this path will be prepended to every entry returned.")
+        parser.add_argument('-e', '--extension', dest="extension", default='',
+                            help="if given, this extension will be appended to every entry returned.")
+        parser.add_argument('-p', '--protocol', default=None,
+                            help="If set, the protocol is appended to the directory that contains the file lists.")
+        parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
 
-    # the "dumplist" action
-    parser = subparsers.add_parser('dumplist', help=dumplist.__doc__)
-    parser.add_argument('-l', '--list-directory', required=True, help="The directory which contains the file lists.")
-    parser.add_argument('-d', '--directory', default='', help="if given, this path will be prepended to every entry returned.")
-    parser.add_argument('-e', '--extension', default='', help="if given, this extension will be appended to every entry returned.")
-    parser.add_argument('-u', '--purpose', help="if given, this value will limit the output files to those designed for the given purposes.", choices=('enroll', 'probe', ''))
-    parser.add_argument('-g', '--group', help="if given, this value will limit the output files to those belonging to a particular protocolar group.", choices=('dev', 'eval', 'world', 'optional_world_1', 'optional_world_2', ''))
-    parser.add_argument('-c', '--class', dest="sclass", help="if given, this value will limit the output files to those belonging to the given classes.", choices=('client', 'impostor', ''))
-    parser.add_argument('-p', '--protocol', default=None, help="If set, the protocol is appended to the directory that contains the file lists.")
-    parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
-    parser.set_defaults(func=dumplist) #action
-
-    # the "checkfiles" action
-    parser = subparsers.add_parser('checkfiles', help=checkfiles.__doc__)
-    parser.add_argument('-l', '--list-directory', required=True, help="The directory which contains the file lists.")
-    parser.add_argument('-d', '--directory', dest="directory", default='', help="if given, this path will be prepended to every entry returned.")
-    parser.add_argument('-e', '--extension', dest="extension", default='', help="if given, this extension will be appended to every entry returned.")
-    parser.add_argument('-p', '--protocol', default=None, help="If set, the protocol is appended to the directory that contains the file lists.")
-    parser.add_argument('--self-test', dest="selftest", action='store_true', help=argparse.SUPPRESS)
-
-    parser.set_defaults(func=checkfiles) #action
+        parser.set_defaults(func=checkfiles)  # action

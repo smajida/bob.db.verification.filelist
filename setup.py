@@ -49,7 +49,6 @@ setup(
     install_requires=install_requires,
 
 
-
     entry_points={
 
       # declare database to bob

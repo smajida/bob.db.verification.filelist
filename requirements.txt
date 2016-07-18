@@ -2,4 +2,3 @@ setuptools
 bob.core
 bob.io.base
 bob.db.base
-bob.db.verification.utils
